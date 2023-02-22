@@ -1,5 +1,7 @@
 package domain;
 
+import service.OrderType;
+
 import java.util.List;
 
 /**

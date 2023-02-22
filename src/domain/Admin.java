@@ -2,14 +2,13 @@ package domain;
 
 /**
  * @author o0wen0o
- * @create 2023-02-17 11:14 AM
+ * @create 2023-02-22 8:24 PM
  */
-public class Client extends User {
-
-    public Client() {
+public class Admin extends User {
+    public Admin() {
     }
 
-    public Client(String userID, String userName, String phoneNumber) {
+    public Admin(String userID, String userName, String phoneNumber) {
         super(userID, userName, phoneNumber);
     }
 

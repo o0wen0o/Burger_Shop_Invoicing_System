@@ -1,4 +1,4 @@
-package domain;
+package service;
 
 /**
  * @author o0wen0o

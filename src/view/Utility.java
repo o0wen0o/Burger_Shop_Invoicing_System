@@ -1,5 +1,10 @@
 package view;
 
+import domain.Admin;
+import domain.Dish;
+import domain.User;
+import service.DishOrderService;
+
 import java.io.*;
 import java.util.*;
 
@@ -14,7 +19,7 @@ public class Utility {
         ArrayList<String> elements = new ArrayList<>();
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new FileReader("src/service/" + srcPath));
+            br = new BufferedReader(new FileReader("src/service/data/" + srcPath));
 
             String line;
             while ((line = br.readLine()) != null) {
@@ -35,66 +40,48 @@ public class Utility {
         return elements;
     }
 
-    // public static void saveFile(String srcPath, List list) {
-    //     BufferedWriter bw = null;
-    //     try {
-    //         bw = new BufferedWriter(new FileWriter("src/assignment/service/" + srcPath, false));
-    //
-    //         String str = "";
-    //         for (Object obj : list) {
-    //             switch (srcPath) {
-    //                 case "CustomerData.txt":
-    //                 case "AdminData.txt":
-    //                     User u = (User) obj;
-    //                     str = u.getId() + "," + u.getUsername() + "," + u.getPassword() + "," + u.getAge() + ","
-    //                             + u.getPhoneNumber() + "," + u.getEmail() + "," + u.getAddress();
-    //
-    //                     if ("CustomerData.txt".equals(srcPath)) {
-    //                         Customer customer = (Customer) obj;
-    //                         str += "," + customer.getBikeId();
-    //
-    //                     } else {
-    //                         Admin admin = (Admin) obj;
-    //                         str += "," + admin.getSalary();
-    //                     }
-    //                     break;
-    //
-    //                 case "BicycleData.txt":
-    //                     Bicycle b = (Bicycle) obj;
-    //                     str = b.getId() + "," + b.getBikeType() + "," + b.getStatus() + "," + b.getBikeAge() + ","
-    //                             + b.getWheelDiameter() + "," + b.getRentPerHour();
-    //                     break;
-    //
-    //                 case "RentalDescriptionData.txt":
-    //                     RentalDescription rd = (RentalDescription) obj;
-    //                     str = rd.getBikeId() + "," + rd.getRentalTime() + "," + rd.getTotalRent();
-    //                     break;
-    //             }
-    //
-    //             bw.write(str);
-    //             bw.newLine();
-    //         }
-    //
-    //     } catch (IOException e) {
-    //         e.printStackTrace();
-    //     } finally {
-    //         if (bw != null) {
-    //             try {
-    //                 bw.close();
-    //             } catch (IOException e) {
-    //                 e.printStackTrace();
-    //             }
-    //         }
-    //     }
-    // }
+    // obj is list or map
+    public static void saveFile(String srcPath, String str) {
+        BufferedWriter bw = null;
+        try {
+            bw = new BufferedWriter(new FileWriter("src/service/data/" + srcPath, false));
 
-    // limit the input as 1-5, Q or q
+            bw.write(str);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (bw != null) {
+                try {
+                    bw.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    // limit the input as 1-7
     public static char readMenuSelection() {
         char c;
         for (; ; ) {
             String str = readKeyBoard(1, false).toUpperCase();
             c = str.charAt(0);
-            if (c != '1' && c != '2' && c != '3' && c != '4' && c != '5'&& c != '6'&& c != '7') {
+            if (c != '1' && c != '2' && c != '3' && c != '4' && c != '5' && c != '6' && c != '7') {
+                System.out.print("Invalid Input! Please Try Again: ");
+            } else
+                break;
+        }
+        return c;
+    }
+
+    // limit the input as 1-2
+    public static char readSelection() {
+        char c;
+        for (; ; ) {
+            String str = readKeyBoard(1, false).toUpperCase();
+            c = str.charAt(0);
+            if (c != '1' && c != '2') {
                 System.out.print("Invalid Input! Please Try Again: ");
             } else
                 break;
@@ -156,41 +143,6 @@ public class Utility {
 
             try {
                 n = Integer.parseInt(str);
-                break;
-            } catch (NumberFormatException e) {
-                System.out.print("Invalid Input! Please Try Again: ");
-            }
-        }
-        return n;
-    }
-
-    // read double datatype value which not greater than 8
-    public static double readDouble() {
-        double n;
-        for (; ; ) {
-            String str = readKeyBoard(8, false);
-            try {
-                n = Double.parseDouble(str);
-                break;
-            } catch (NumberFormatException e) {
-                System.out.print("Invalid Input! Please Try Again: ");
-            }
-        }
-        return n;
-    }
-
-    // read a double, return current value if user does not intend to change to new
-    // value
-    public static double readDouble(double defaultValue) {
-        double n;
-        for (; ; ) {
-            String str = readKeyBoard(8, true);
-            if (str.equals("")) {
-                return defaultValue;
-            }
-
-            try {
-                n = Double.parseDouble(str);
                 break;
             } catch (NumberFormatException e) {
                 System.out.print("Invalid Input! Please Try Again: ");

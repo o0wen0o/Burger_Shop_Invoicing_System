@@ -1,9 +1,7 @@
 package view;
 
-import service.ClientListService;
-import service.DishOrderService;
-import service.Menu;
-import service.OrderListService;
+import domain.Dish;
+import service.*;
 
 /**
  * @author o0wen0o
@@ -12,6 +10,7 @@ import service.OrderListService;
 public class MainMenu {
 
     private Menu menu = new Menu();
+    private AdminListService adminListService = new AdminListService();
     private ClientListService clientListService = new ClientListService();
     private DishOrderService dishOrderService = new DishOrderService(menu);
     private OrderListService orderListService = new OrderListService(dishOrderService);
@@ -28,7 +27,7 @@ public class MainMenu {
             System.out.println("(2)Update/Maintain Orders");
             System.out.println("(3)Cancel Order");
             System.out.println("(4)View Billing Statements");
-            System.out.println("(5)Show Menu");
+            System.out.println("(5)Search Menu");
             System.out.println("(6)Create User Profile");
             System.out.println("(7)Quit");
             System.out.println("--------------------------------------");
@@ -38,6 +37,8 @@ public class MainMenu {
 
             switch (option) {
                 case '1':
+                    menu.showMenu();
+                    orderListService.createOrder("C0001", menu, clientListService, dishOrderService);
                     break;
 
                 case '2':
@@ -53,27 +54,31 @@ public class MainMenu {
                     break;
 
                 case '5':
-                    menu.showMenu();
+                    System.out.print("Please enter dish ID: ");
+                    String dishID = Utility.readString(3);
+
+                    if (!menu.isExist(dishID)) {
+                        System.out.println("Dish does not exist. Please try again.");
+                        break;
+                    }
+
+                    Dish dish = menu.getDishByID(dishID);
+                    menu.showDish(dish);
                     break;
 
                 case '6':
                     break;
 
                 case '7':
-                    System.out.print("Are you sure to end the program? (Y/N): ");
+                    System.out.print("End the program? (Y/N): ");
                     char exit = Utility.readConfirmSelection();
                     if (exit == 'Y') {
                         isRun = false;
                         System.out.print("Thank You For Using The System.\n");
                     }
                     break;
-
-                default:
-                    System.out.print("--------------------------------------\n");
-                    System.out.print("Invalid Input!\n");
-                    Utility.readReturn();
-                    break;
             }
+            Utility.readReturn();
         }
     }
 

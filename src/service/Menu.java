@@ -1,11 +1,11 @@
 package service;
 
-import domain.Client;
 import domain.Dish;
 import view.Utility;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author o0wen0o
@@ -42,10 +42,29 @@ public class Menu {
 
         System.out.println(String.format("%54s", " ").replace(' ', '-'));
         System.out.println();
-        Utility.readReturn();
+    }
+
+    public void showDish(Dish dish) {
+        System.out.println(String.format("%54s", " ").replace(' ', '-'));
+
+        String str = String.format("|%-10s|%-30s|%-10s|", "Dish ID", "Dish Name", "Unit Price");
+        System.out.println(str);
+
+        System.out.println(String.format("%54s", " ").replace(' ', '-'));
+
+        System.out.println(dish);
+
+        System.out.println(String.format("%54s", " ").replace(' ', '-'));
+        System.out.println();
+    }
+
+    public boolean isExist(String dishID) {
+        return menu.contains(getDishByID(dishID.toUpperCase()));
     }
 
     public Dish getDishByID(String dishID) {
+        dishID = dishID.toUpperCase();
+
         for (Dish dish : menu) {
             if (dishID.equals(dish.getDishID())) {
                 return dish;

@@ -1,8 +1,6 @@
 package service;
 
 import domain.Client;
-import domain.Dish;
-import domain.PaymentStatus;
 import view.Utility;
 
 import java.util.ArrayList;
@@ -23,9 +21,8 @@ public class ClientListService {
             String clientID = elements.get(i + 0);
             String clientName = elements.get(i + 1);
             String phoneNumber = elements.get(i + 2);
-            PaymentStatus paymentStatus = PaymentStatus.valueOf(elements.get(i + 3));
 
-            clientList.add(new Client(clientID, clientName, phoneNumber, paymentStatus));
+            clientList.add(new Client(clientID, clientName, phoneNumber));
         }
     }
 
@@ -33,7 +30,7 @@ public class ClientListService {
         System.out.println();
         System.out.println(String.format("%77s", " ").replace(' ', '-'));
 
-        String str = String.format("|%-12s|%-30s|%-16s|%-14s|", "Client ID", "Client Name", "Phone Number", "Payment Status");
+        String str = String.format("|%-12s|%-30s|%-16s|", "Client ID", "Client Name", "Phone Number");
         System.out.println(str);
 
         System.out.println(String.format("%77s", " ").replace(' ', '-'));
@@ -44,10 +41,11 @@ public class ClientListService {
 
         System.out.println(String.format("%77s", " ").replace(' ', '-'));
         System.out.println();
-        Utility.readReturn();
     }
 
     public Client getClientById(String clientID) {
+        clientID = clientID.toUpperCase();
+
         for (Client client : clientList) {
             if (clientID.equals(client.getUserID())) {
                 return client;
@@ -55,5 +53,4 @@ public class ClientListService {
         }
         return null;
     }
-
 }

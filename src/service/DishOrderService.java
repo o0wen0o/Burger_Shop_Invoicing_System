@@ -3,10 +3,7 @@ package service;
 import domain.Dish;
 import view.Utility;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * each order has one this instance
@@ -21,29 +18,36 @@ public class DishOrderService {
     public DishOrderService(Menu menu) {
         List<String> elements = Utility.readFile(srcPath);
 
-        ArrayList<Dish> dishes = new ArrayList<>();
+        ArrayList<Dish> dishOrder = new ArrayList<>();
         String orderID = elements.get(0);
 
         for (int i = 1; i < elements.size(); i += 2) {
             String dishID = elements.get(i + 0);
             int quantity = Integer.parseInt(elements.get(i + 1));
-            dishes.add(new Dish(menu.getDishByID(dishID), quantity));
+            dishOrder.add(new Dish(menu.getDishByID(dishID), quantity));
 
-            if (elements.get(i + 1).charAt(0) == 'O' || i == elements.size() - 2) {
-                dishOrderList.put(orderID, dishes);
-                orderID = elements.get(i + 1);
-                dishes = new ArrayList<>();
+            // if element is last two element
+            if (i == elements.size() - 2) {
+                dishOrderList.put(orderID, dishOrder);
+                break;
+            }
+
+            // if element is order ID
+            if (elements.get(i + 2).matches("^O[0-9]{4}$")) {
+                dishOrderList.put(orderID, dishOrder);
+                orderID = elements.get(++i + 1);
+                dishOrder = new ArrayList<>();
             }
         }
     }
 
     public void showDishOrderByOrderID(String orderID) {
-        ArrayList<Dish> dishes = dishOrderList.get(orderID);
+        ArrayList<Dish> dishOrder = dishOrderList.get(orderID.toUpperCase());
         System.out.println(String.format("|%-10s|%-30s|%-10s|%-10s|%-10s|", "Dish ID", "Dish Name", "Quantity", "Unit Price", "Amount"));
         System.out.println(String.format("%76s", " ").replace(' ', '-'));
 
         double total = 0;
-        for (Dish dish : dishes) {
+        for (Dish dish : dishOrder) {
             int quantity = dish.getQuantity();
             double unitPrice = dish.getUnitPrice();
             double amount = quantity * unitPrice;
@@ -55,7 +59,29 @@ public class DishOrderService {
         System.out.println("Total: $" + total);
     }
 
+    public void addDishOrder(String orderID, ArrayList<Dish> dishOrder) {
+        dishOrderList.put(orderID, dishOrder);
+        saveFile(srcPath);
+    }
+
     public List<Dish> getDishOrderByOrderID(String orderID) {
-        return dishOrderList.get(orderID);
+        return dishOrderList.get(orderID.toUpperCase());
+    }
+
+    private void saveFile(String srcPath) {
+        String str = "";
+
+        for (Map.Entry<String, ArrayList<Dish>> entry : dishOrderList.entrySet()) {
+            String key = entry.getKey();
+            ArrayList<Dish> value = entry.getValue();
+
+            str += key;
+            for (Dish dish : value) {
+                str += String.format(",%s,%s", dish.getDishID(), dish.getQuantity());
+            }
+            str += "\n";
+        }
+
+        Utility.saveFile(srcPath, str);
     }
 }
