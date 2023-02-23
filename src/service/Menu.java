@@ -28,7 +28,7 @@ public class Menu {
     }
 
     public void showMenu() {
-        System.out.println();
+        System.out.println("\nMenu:");
         System.out.println(String.format("%54s", " ").replace(' ', '-'));
 
         String str = String.format("|%-10s|%-30s|%-10s|", "Dish ID", "Dish Name", "Unit Price");
@@ -60,6 +60,10 @@ public class Menu {
 
     public boolean isExist(String dishID) {
         return menu.contains(getDishByID(dishID.toUpperCase()));
+    }
+
+    public List<Dish> getMenu() {
+        return menu;
     }
 
     public Dish getDishByID(String dishID) {

@@ -32,48 +32,24 @@ public class Order {
         return orderID;
     }
 
-    public void setOrderID(String orderID) {
-        this.orderID = orderID;
-    }
-
     public String getTableNo() {
         return tableNo;
-    }
-
-    public void setTableNo(String tableNo) {
-        this.tableNo = tableNo;
     }
 
     public String getClientID() {
         return clientID;
     }
 
-    public void setClientID(String clientID) {
-        this.clientID = clientID;
-    }
-
     public OrderType getOrderType() {
         return orderType;
-    }
-
-    public void setOrderType(OrderType orderType) {
-        this.orderType = orderType;
     }
 
     public List<Dish> getDishOrder() {
         return dishOrder;
     }
 
-    public void setDishOrder(List<Dish> dishOrder) {
-        this.dishOrder = dishOrder;
-    }
-
     public String getDateTime() {
         return dateTime;
-    }
-
-    public void setDateTime(String dateTime) {
-        this.dateTime = dateTime;
     }
 
     @Override

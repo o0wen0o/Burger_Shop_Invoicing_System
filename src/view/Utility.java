@@ -61,44 +61,27 @@ public class Utility {
         }
     }
 
-    // limit the input as 1-7
-    public static char readMenuSelection() {
-        char c;
-        for (; ; ) {
-            String str = readKeyBoard(1, false).toUpperCase();
-            c = str.charAt(0);
-            if (c != '1' && c != '2' && c != '3') {
-                System.out.print("Invalid Input! Please Try Again: ");
-            } else
-                break;
-        }
-        return c;
-    }
+    // limit the input
+    public static char readSelection(char[] conditions) {
+        char c = 0;
+        boolean isValid = false;
 
-    // limit the input as 1-2
-    public static char readSelection() {
-        char c;
-        for (; ; ) {
+        while (true) {
             String str = readKeyBoard(1, false).toUpperCase();
             c = str.charAt(0);
-            if (c != '1' && c != '2') {
-                System.out.print("Invalid Input! Please Try Again: ");
-            } else
-                break;
-        }
-        return c;
-    }
 
-    // limit the input as A,R,S,U,Q
-    public static char readAdminMenuSelection() {
-        char c;
-        for (; ; ) {
-            String str = readKeyBoard(1, false).toUpperCase();
-            c = str.charAt(0);
-            if (c != '1' && c != '2' && c != '3' && c != '4' && c != '5'&& c != '6') {
-                System.out.print("Invalid Input! Please Try Again: ");
-            } else
+            for (char condition : conditions) {
+                if (c == condition) {
+                    isValid = true;
+                    break;
+                }
+            }
+
+            if (isValid) {
                 break;
+            }
+
+            System.out.print("Invalid Input! Please Try Again: ");
         }
         return c;
     }
@@ -118,36 +101,9 @@ public class Utility {
         return n;
     }
 
-    // read an integer, return current value if user does not intend to change to
-    // new value
-    public static int readInt(int defaultValue) {
-        int n;
-        for (; ; ) {
-            String str = readKeyBoard(6, true);
-            if (str.equals("")) {
-                return defaultValue;
-            }
-
-            try {
-                n = Integer.parseInt(str);
-                break;
-            } catch (NumberFormatException e) {
-                System.out.print("Invalid Input! Please Try Again: ");
-            }
-        }
-        return n;
-    }
-
     // read a string which not greater than the limit
     public static String readString(int limit) {
         return readKeyBoard(limit, false);
-    }
-
-    // read a character which not greater than the limit, return current value if
-    // user does not intend to change to new value
-    public static String readString(int limit, String defaultValue) {
-        String str = readKeyBoard(limit, true);
-        return str.equals("") ? defaultValue : str;
     }
 
     // read 'Y' or 'N' only

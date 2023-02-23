@@ -32,13 +32,13 @@ public class MainMenu {
             System.out.println("--------------------------------------");
 
             System.out.print("Option >> ");
-            option = Utility.readMenuSelection();
+            option = Utility.readSelection(new char[]{'1','2','3'});
 
             switch (option) {
                 case '1':
                     System.out.print("--------------------------------------\n");
                     System.out.print("ID: ");
-                    identifyId = Utility.readString(5);
+                    identifyId = Utility.readString(5).toUpperCase();
                     System.out.print("Password: ");
                     String pwd = Utility.readString(20);
 
@@ -102,33 +102,35 @@ public class MainMenu {
             System.out.println("\n--------------------------------------");
             System.out.println("<< Welcome To Burger Shop System >>");
             System.out.println("--------------------------------------");
-            System.out.println("(1) Update/Maintain Orders");
+            System.out.println("(1) Update/Maintain Order");
             System.out.println("(2) Cancel Order");
-            System.out.println("(3) View Billing Statements");
+            System.out.println("(3) View Billing Statement");
             System.out.println("(4) Search Dish");
             System.out.println("(5) Create Admin Profile");
-            System.out.println("(6) Quit");
+            System.out.println("(6) Show Admin Profile");
+            System.out.println("(7) Show Client Profile");
+            System.out.println("(8) Quit");
             System.out.println("--------------------------------------");
 
             System.out.print("Option >> ");
-            option = Utility.readAdminMenuSelection();
+            option = Utility.readSelection(new char[]{'1','2','3','4','5','6','7','8'});
 
             switch (option) {
                 case '1':
+                    orderListService.updateOrder(menu, clientListService, dishOrderService);
                     break;
 
                 case '2':
+                    orderListService.cancelOrder(dishOrderService);
                     break;
 
                 case '3':
-                    System.out.print("Please enter order ID: ");
-                    String orderID = Utility.readString(5);
-                    orderListService.showOrderByID(orderID, clientListService, dishOrderService);
+                    orderListService.showOrderByID(clientListService, dishOrderService);
                     break;
 
                 case '4':
                     System.out.print("Please enter dish ID: ");
-                    String dishID = Utility.readString(3);
+                    String dishID = Utility.readString(3).toUpperCase();
 
                     if (!menu.isExist(dishID)) {
                         System.out.println("Dish does not exist. Please try again.");
@@ -144,6 +146,14 @@ public class MainMenu {
                     break;
 
                 case '6':
+                    adminListService.showAdminList();
+                    break;
+
+                case '7':
+                    clientListService.showClientList();
+                    break;
+
+                case '8':
                     System.out.print("Logout account? (Y/N): ");
                     char exit = Utility.readConfirmSelection();
                     if (exit == 'Y') {
@@ -170,7 +180,7 @@ public class MainMenu {
             System.out.println("--------------------------------------");
 
             System.out.print("Option >> ");
-            option = Utility.readMenuSelection();
+            option = Utility.readSelection(new char[]{'1','2','3'});
 
             switch (option) {
                 case '1':
@@ -179,9 +189,7 @@ public class MainMenu {
                     break;
 
                 case '2':
-                    System.out.print("Please enter order ID: ");
-                    String orderID = Utility.readString(5);
-                    orderListService.showOrderByID(orderID, clientListService, dishOrderService);
+                    orderListService.showOrderByID(clientListService, dishOrderService);
                     break;
 
                 case '3':

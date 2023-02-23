@@ -42,7 +42,8 @@ public class DishOrderService {
     }
 
     public void showDishOrderByOrderID(String orderID) {
-        ArrayList<Dish> dishOrder = dishOrderList.get(orderID.toUpperCase());
+        ArrayList<Dish> dishOrder = dishOrderList.get(orderID);
+        System.out.println(String.format("%76s", " ").replace(' ', '-'));
         System.out.println(String.format("|%-10s|%-30s|%-10s|%-10s|%-10s|", "Dish ID", "Dish Name", "Quantity", "Unit Price", "Amount"));
         System.out.println(String.format("%76s", " ").replace(' ', '-'));
 
@@ -57,6 +58,8 @@ public class DishOrderService {
 
         System.out.println(String.format("%76s", " ").replace(' ', '-'));
         System.out.println("Total: $" + total);
+        System.out.println(String.format("%76s", " ").replace(' ', '-'));
+        System.out.println();
     }
 
     public void addDishOrder(String orderID, ArrayList<Dish> dishOrder) {
@@ -64,8 +67,13 @@ public class DishOrderService {
         saveFile();
     }
 
+    public void cancelDishOrder(String orderID) {
+        dishOrderList.remove(orderID);
+        saveFile();
+    }
+
     public List<Dish> getDishOrderByOrderID(String orderID) {
-        return dishOrderList.get(orderID.toUpperCase());
+        return dishOrderList.get(orderID);
     }
 
     private void saveFile() {

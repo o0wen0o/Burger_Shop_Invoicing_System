@@ -31,24 +31,12 @@ public class Dish {
         return dishID;
     }
 
-    public void setDishID(String dishID) {
-        this.dishID = dishID;
-    }
-
     public String getDishName() {
         return dishName;
     }
 
-    public void setDishName(String dishName) {
-        this.dishName = dishName;
-    }
-
     public double getUnitPrice() {
         return unitPrice;
-    }
-
-    public void setUnitPrice(double unitPrice) {
-        this.unitPrice = unitPrice;
     }
 
     public int getQuantity() {
