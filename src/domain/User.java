@@ -7,14 +7,16 @@ package domain;
 public class User {
     private String userID;
     private String userName;
+    private String password;
     private String phoneNumber;
 
     public User() {
     }
 
-    public User(String userID, String userName, String phoneNumber) {
+    public User(String userID, String userName, String password, String phoneNumber) {
         this.userID = userID;
         this.userName = userName;
+        this.password = password;
         this.phoneNumber = phoneNumber;
     }
 
@@ -40,5 +42,13 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

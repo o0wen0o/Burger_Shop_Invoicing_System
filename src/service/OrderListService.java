@@ -104,7 +104,7 @@ public class OrderListService {
                 // end this method
                 dishOrderService.addDishOrder(orderID, dishOrder);
                 orderList.add(new Order(orderID, tableNo, clientID, orderType, dishOrder, dateTime));
-                saveFile(srcPath);
+                saveFile();
                 break;
             }
 
@@ -153,7 +153,7 @@ public class OrderListService {
         return null;
     }
 
-    private void saveFile(String srcPath) {
+    private void saveFile() {
         String str = "";
 
         for (Order order : orderList) {

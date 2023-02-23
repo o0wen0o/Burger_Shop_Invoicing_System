@@ -67,7 +67,7 @@ public class Utility {
         for (; ; ) {
             String str = readKeyBoard(1, false).toUpperCase();
             c = str.charAt(0);
-            if (c != '1' && c != '2' && c != '3' && c != '4' && c != '5' && c != '6' && c != '7') {
+            if (c != '1' && c != '2' && c != '3') {
                 System.out.print("Invalid Input! Please Try Again: ");
             } else
                 break;
@@ -95,25 +95,12 @@ public class Utility {
         for (; ; ) {
             String str = readKeyBoard(1, false).toUpperCase();
             c = str.charAt(0);
-            if (c != 'A' && c != 'R' && c != 'S' && c != 'U' && c != 'Q') {
+            if (c != '1' && c != '2' && c != '3' && c != '4' && c != '5'&& c != '6') {
                 System.out.print("Invalid Input! Please Try Again: ");
             } else
                 break;
         }
         return c;
-    }
-
-    // read character
-    public static char readChar() {
-        String str = readKeyBoard(1, false);
-        return str.charAt(0);
-    }
-
-    // read a character, return current value if user does not intend to change to
-    // new value
-    public static char readChar(char defaultValue) {
-        String str = readKeyBoard(1, true);
-        return (str.length() == 0) ? defaultValue : str.charAt(0);
     }
 
     // read integer which not greater than 6

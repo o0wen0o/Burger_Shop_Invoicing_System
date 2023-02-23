@@ -61,14 +61,14 @@ public class DishOrderService {
 
     public void addDishOrder(String orderID, ArrayList<Dish> dishOrder) {
         dishOrderList.put(orderID, dishOrder);
-        saveFile(srcPath);
+        saveFile();
     }
 
     public List<Dish> getDishOrderByOrderID(String orderID) {
         return dishOrderList.get(orderID.toUpperCase());
     }
 
-    private void saveFile(String srcPath) {
+    private void saveFile() {
         String str = "";
 
         for (Map.Entry<String, ArrayList<Dish>> entry : dishOrderList.entrySet()) {
