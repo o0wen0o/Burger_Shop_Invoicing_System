@@ -42,7 +42,24 @@ public class DishOrderService {
     }
 
     public void showDishOrderByOrderID(String orderID) {
-        ArrayList<Dish> dishOrder = dishOrderList.get(orderID);
+        showDishOrder(orderID, null);
+    }
+
+    public void showDishOrderByList(ArrayList<Dish> dishOrder) {
+        showDishOrder(null, dishOrder);
+    }
+
+    private void showDishOrder(String orderID, ArrayList<Dish> dishOrderNew) {
+        ArrayList<Dish> dishOrder = new ArrayList<>();
+
+        if (dishOrderNew == null) {
+            dishOrder = dishOrderList.get(orderID);
+        }
+
+        if (orderID == null) {
+            dishOrder = dishOrderNew;
+        }
+
         System.out.println(String.format("%76s", " ").replace(' ', '-'));
         System.out.println(String.format("|%-10s|%-30s|%-10s|%-10s|%-10s|", "Dish ID", "Dish Name", "Quantity", "Unit Price", "Amount"));
         System.out.println(String.format("%76s", " ").replace(' ', '-'));

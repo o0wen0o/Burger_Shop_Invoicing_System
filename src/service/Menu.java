@@ -27,7 +27,7 @@ public class Menu {
     }
 
     public void showMenu() {
-        System.out.println("\nMenu:");
+        System.out.println("\n\u001B[33mMenu:\u001B[0m");
         System.out.println(String.format("%54s", " ").replace(' ', '-'));
 
         String str = String.format("|%-10s|%-30s|%-10s|", "Dish ID", "Dish Name", "Unit Price");

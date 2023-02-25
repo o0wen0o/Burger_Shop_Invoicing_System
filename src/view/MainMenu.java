@@ -37,7 +37,7 @@ public class MainMenu {
             switch (option) {
                 case '1':
                     System.out.print("--------------------------------------\n");
-                    System.out.print("ID: ");
+                    System.out.print("Admin/Client ID: ");
                     identifyId = Utility.readString(5).toUpperCase();
                     System.out.print("Password: ");
                     String pwd = Utility.readString(20);

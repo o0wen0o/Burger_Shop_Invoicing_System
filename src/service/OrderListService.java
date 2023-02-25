@@ -78,7 +78,7 @@ public class OrderListService {
         System.out.println("(1)Dine In");
         System.out.println("(2)Take Away");
         System.out.print("Option >> ");
-        char selection = Utility.readSelection(new char[]{'1','2'});
+        char selection = Utility.readSelection(new char[]{'1', '2'});
         OrderType orderType = selection == '1' ? OrderType.DINE_IN : OrderType.TAKE_AWAY;
 
         // show menu
@@ -92,18 +92,8 @@ public class OrderListService {
             System.out.print("Add To Cart (Enter Dish ID): ");
             String dishID = Utility.readString(3).toUpperCase();
 
-            // to quit the order process
-            if ("1".equalsIgnoreCase(dishID)) {
-                System.out.print("End order process? (Y/N): ");
-                char exit = Utility.readConfirmSelection();
-                if (exit == 'Y') {
-                    break;
-                }
-                continue; // continue this method
-            }
-
             // to complete the order process
-            if ("2".equalsIgnoreCase(dishID)) {
+            if ("1".equalsIgnoreCase(dishID)) {
                 if (dishOrder.isEmpty()) {
                     System.out.println("No dishes in the cart.");
                     continue; // continue this method
@@ -115,6 +105,16 @@ public class OrderListService {
                 saveFile();
                 System.out.println("\u001B[33mCreated Successfully!\u001B[0m");
                 break;
+            }
+
+            // to quit the order process
+            if ("2".equalsIgnoreCase(dishID)) {
+                System.out.print("Cancel the order? (Y/N): ");
+                char exit = Utility.readConfirmSelection();
+                if (exit == 'Y') {
+                    break;
+                }
+                continue; // continue this method
             }
 
             // check if dish ID exist
@@ -173,17 +173,21 @@ public class OrderListService {
         System.out.println("(1)Dine In");
         System.out.println("(2)Take Away");
         System.out.print("Option >> ");
-        char selection = Utility.readSelection(new char[]{'1','2'});
+        char selection = Utility.readSelection(new char[]{'1', '2'});
         OrderType orderType = selection == '1' ? OrderType.DINE_IN : OrderType.TAKE_AWAY;
 
-        List<Dish> dishOrder = order.getDishOrder();
+        // copy the dishOrder
+        ArrayList<Dish> dishOrderNew = new ArrayList<>();
+        for (Dish dish: order.getDishOrder()) {
+            dishOrderNew.add(new Dish(dish, dish.getQuantity()));
+        }
 
         char option;
         boolean isRun = true;
 
         while (isRun) {
-            System.out.println("\nHere Is The Order.");
-            dishOrderService.showDishOrderByOrderID(orderID);
+            System.out.println("\n\u001B[33mHere Is The Order.\u001B[0m");
+            dishOrderService.showDishOrderByList(dishOrderNew);
 
             System.out.println("--------------------------------------");
             System.out.println("(1) Add New Dish");
@@ -194,7 +198,7 @@ public class OrderListService {
             System.out.println("--------------------------------------");
 
             System.out.print("Option >> ");
-            option = Utility.readSelection(new char[]{'1','2','3','4','5'});
+            option = Utility.readSelection(new char[]{'1', '2', '3', '4', '5'});
 
             String dishID;
             switch (option) {
@@ -222,7 +226,7 @@ public class OrderListService {
 
                     boolean isNewDish = true;
                     // if the dish already ordered
-                    for (Dish dishOld : dishOrder) {
+                    for (Dish dishOld : dishOrderNew) {
                         if (dishOld.getDishID().equals(dishID)) {
                             if (option == '1') {
                                 dishOld.setQuantity(dishOld.getQuantity() + quantity);
@@ -237,7 +241,7 @@ public class OrderListService {
 
                     // if the dish haven't ordered
                     if (isNewDish) {
-                        dishOrder.add(new Dish(dish, quantity));
+                        dishOrderNew.add(new Dish(dish, quantity));
                     }
 
                     if (option == '1') {
@@ -258,9 +262,9 @@ public class OrderListService {
                         break; // continue this method
                     }
 
-                    for (Dish dishOld : dishOrder) {
+                    for (Dish dishOld : dishOrderNew) {
                         if (dishOld.getDishID().equals(dishID)) {
-                            dishOrder.remove(dishOld);
+                            dishOrderNew.remove(dishOld);
                             break;
                         }
                     }
@@ -269,27 +273,26 @@ public class OrderListService {
                     break;
 
                 case '4':
-                    System.out.print("End order process? (Y/N): ");
-                    char exit = Utility.readConfirmSelection();
-                    if (exit == 'Y') {
-                        isRun = false;
-                    }
-                    break;
-
-                case '5':
                     // to complete the order process
-                    if (dishOrder.isEmpty()) {
+                    if (dishOrderNew.isEmpty()) {
                         System.out.println("No dishes in the cart.");
                         break; // continue this method
                     }
 
                     // end this method
-                    // no need to update dishOrderService
-                    // dishOrderService.addDishOrder(orderID, dishOrderNew);
-                    orderList.set(orderList.indexOf(order), new Order(orderID, tableNo, clientID, orderType, dishOrder, dateTime));
+                    dishOrderService.addDishOrder(orderID, dishOrderNew);
+                    orderList.set(orderList.indexOf(order), new Order(orderID, tableNo, clientID, orderType, dishOrderNew, dateTime));
                     saveFile();
                     System.out.println("\u001B[33mUpdated Successfully!\u001B[0m");
                     isRun = false;
+                    break;
+
+                case '5':
+                    System.out.print("Cancel the order? (Y/N): ");
+                    char exit = Utility.readConfirmSelection();
+                    if (exit == 'Y') {
+                        isRun = false;
+                    }
                     break;
             }
         }
