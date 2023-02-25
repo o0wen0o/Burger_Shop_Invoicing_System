@@ -65,7 +65,7 @@ public class ClientListService {
 
         clientList.add(new Client(clientID, name, password, phoneNumber));
         saveFile();
-        System.out.println("Added Successfully.");
+        System.out.println("\u001B[33mAdded Successfully.\u001B[0m");
     }
 
     public Client getClientById(String clientID) {

@@ -65,7 +65,7 @@ public class AdminListService {
 
         adminList.add(new Admin(adminID, name, password, phoneNumber));
         saveFile();
-        System.out.println("Added Successfully.");
+        System.out.println("\u001B[33mAdded Successfully.\u001B[0m");
     }
 
     public List<Admin> getAllAdmins() {

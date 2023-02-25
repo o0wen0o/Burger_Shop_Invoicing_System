@@ -85,14 +85,15 @@ public class OrderListService {
         menu.showMenu();
 
         ArrayList<Dish> dishOrder = new ArrayList<>();
-        System.out.println("\u001B[33m(Q)uit. (C)omplete.\u001B[0m");
+        System.out.println("\u001B[33m(1) Complete Order\u001B[0m");
+        System.out.println("\u001B[33m(2) Cancel Order\u001B[0m");
 
         while (true) {
-            System.out.print("Add To Cart (ID): ");
+            System.out.print("Add To Cart (Enter Dish ID): ");
             String dishID = Utility.readString(3).toUpperCase();
 
             // to quit the order process
-            if ("Q".equalsIgnoreCase(dishID)) {
+            if ("1".equalsIgnoreCase(dishID)) {
                 System.out.print("End order process? (Y/N): ");
                 char exit = Utility.readConfirmSelection();
                 if (exit == 'Y') {
@@ -102,7 +103,7 @@ public class OrderListService {
             }
 
             // to complete the order process
-            if ("C".equalsIgnoreCase(dishID)) {
+            if ("2".equalsIgnoreCase(dishID)) {
                 if (dishOrder.isEmpty()) {
                     System.out.println("No dishes in the cart.");
                     continue; // continue this method
@@ -112,7 +113,7 @@ public class OrderListService {
                 dishOrderService.addDishOrder(orderID, dishOrder);
                 orderList.add(new Order(orderID, tableNo, clientID, orderType, dishOrder, dateTime));
                 saveFile();
-                System.out.println("Created Successfully!");
+                System.out.println("\u001B[33mCreated Successfully!\u001B[0m");
                 break;
             }
 
@@ -164,16 +165,18 @@ public class OrderListService {
         String clientID = order.getClientID();
         System.out.println("Bill To: " + clientListService.getClientById(clientID).getUserName());
 
-        System.out.println("\nOrder Type: (1)Dine In\t(2)Take Away");
+        DateTimeFormatter formatter3 = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+        String dateTime = formatter3.format(LocalDateTime.now());
+        System.out.println("Date Time: " + dateTime);
+
+        System.out.println("\nOrder Type: ");
+        System.out.println("(1)Dine In");
+        System.out.println("(2)Take Away");
         System.out.print("Option >> ");
         char selection = Utility.readSelection(new char[]{'1','2'});
         OrderType orderType = selection == '1' ? OrderType.DINE_IN : OrderType.TAKE_AWAY;
 
         List<Dish> dishOrder = order.getDishOrder();
-
-        DateTimeFormatter formatter3 = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
-        String dateTime = formatter3.format(LocalDateTime.now());
-        System.out.println("Date Time: " + dateTime);
 
         char option;
         boolean isRun = true;
@@ -186,11 +189,12 @@ public class OrderListService {
             System.out.println("(1) Add New Dish");
             System.out.println("(2) Update Dish");
             System.out.println("(3) Cancel Dish");
-            System.out.println("(Q) to exit. (C) to complete order.");
+            System.out.println("(4) Complete Order");
+            System.out.println("(5) Cancel Order");
             System.out.println("--------------------------------------");
 
             System.out.print("Option >> ");
-            option = Utility.readSelection(new char[]{'1','2','3','Q','C'});
+            option = Utility.readSelection(new char[]{'1','2','3','4','5'});
 
             String dishID;
             switch (option) {
@@ -198,9 +202,9 @@ public class OrderListService {
                     menu.showMenu();
                 case '2':
                     if (option == '1') {
-                        System.out.print("Add To Cart >> (ID) ");
+                        System.out.print("Add To Cart (Enter Dish ID): ");
                     } else {
-                        System.out.print("Update Dish >> (ID) ");
+                        System.out.print("Update Dish (Enter Dish ID): ");
                     }
 
                     dishID = Utility.readString(3).toUpperCase();
@@ -237,15 +241,15 @@ public class OrderListService {
                     }
 
                     if (option == '1') {
-                        System.out.println(String.format("Added %d %s.\n", quantity, dish.getDishName()));
+                        System.out.println(String.format("\u001B[33mAdded %d %s.\u001B[0m\n", quantity, dish.getDishName()));
                     } else {
-                        System.out.println("Updated Successfully!");
+                        System.out.println("\u001B[33mUpdated Successfully!\u001B[0m");
                     }
                     Utility.readReturn();
                     break;
 
                 case '3':
-                    System.out.print("Cancel Dish >> (ID) ");
+                    System.out.print("Cancel Dish (Enter Dish ID): ");
                     dishID = Utility.readString(3).toUpperCase();
 
                     // check if dish ID exist
@@ -260,11 +264,11 @@ public class OrderListService {
                             break;
                         }
                     }
-                    System.out.println("Cancelled Successfully!");
+                    System.out.println("\u001B[33mCancelled Successfully!\u001B[0m");
                     Utility.readReturn();
                     break;
 
-                case 'Q':
+                case '4':
                     System.out.print("End order process? (Y/N): ");
                     char exit = Utility.readConfirmSelection();
                     if (exit == 'Y') {
@@ -272,7 +276,7 @@ public class OrderListService {
                     }
                     break;
 
-                case 'C':
+                case '5':
                     // to complete the order process
                     if (dishOrder.isEmpty()) {
                         System.out.println("No dishes in the cart.");
@@ -284,7 +288,7 @@ public class OrderListService {
                     // dishOrderService.addDishOrder(orderID, dishOrderNew);
                     orderList.set(orderList.indexOf(order), new Order(orderID, tableNo, clientID, orderType, dishOrder, dateTime));
                     saveFile();
-                    System.out.println("Updated Successfully!");
+                    System.out.println("\u001B[33mUpdated Successfully!\u001B[0m");
                     isRun = false;
                     break;
             }
