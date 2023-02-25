@@ -85,12 +85,22 @@ public class OrderListService {
         menu.showMenu();
 
         ArrayList<Dish> dishOrder = new ArrayList<>();
-        System.out.println("\u001B[33m(1) Complete Order\u001B[0m");
-        System.out.println("\u001B[33m(2) Cancel Order\u001B[0m");
+        System.out.println("(1) Enter \'1\' To Complete Order");
+        System.out.println("(2) Enter \'2\' To Cancel Order");
 
         while (true) {
             System.out.print("Add To Cart (Enter Dish ID): ");
             String dishID = Utility.readString(3).toUpperCase();
+
+            // to quit the order process
+            if ("2".equalsIgnoreCase(dishID)) {
+                System.out.print("Cancel the order? (Y/N): ");
+                char exit = Utility.readConfirmSelection();
+                if (exit == 'Y') {
+                    break;
+                }
+                continue; // continue this method
+            }
 
             // to complete the order process
             if ("1".equalsIgnoreCase(dishID)) {
@@ -103,18 +113,8 @@ public class OrderListService {
                 dishOrderService.addDishOrder(orderID, dishOrder);
                 orderList.add(new Order(orderID, tableNo, clientID, orderType, dishOrder, dateTime));
                 saveFile();
-                System.out.println("\u001B[33mCreated Successfully!\u001B[0m");
+                System.out.println("Created Successfully!");
                 break;
-            }
-
-            // to quit the order process
-            if ("2".equalsIgnoreCase(dishID)) {
-                System.out.print("Cancel the order? (Y/N): ");
-                char exit = Utility.readConfirmSelection();
-                if (exit == 'Y') {
-                    break;
-                }
-                continue; // continue this method
             }
 
             // check if dish ID exist
@@ -144,7 +144,7 @@ public class OrderListService {
                 dishOrder.add(new Dish(dish, quantity));
             }
 
-            System.out.println(String.format("\u001B[33mAdded %d %s.\u001B[0m\n", quantity, dish.getDishName()));
+            System.out.println(String.format("Added %d %s.\n", quantity, dish.getDishName()));
         }
     }
 
@@ -178,7 +178,7 @@ public class OrderListService {
 
         // copy the dishOrder
         ArrayList<Dish> dishOrderNew = new ArrayList<>();
-        for (Dish dish: order.getDishOrder()) {
+        for (Dish dish : order.getDishOrder()) {
             dishOrderNew.add(new Dish(dish, dish.getQuantity()));
         }
 
@@ -186,7 +186,7 @@ public class OrderListService {
         boolean isRun = true;
 
         while (isRun) {
-            System.out.println("\n\u001B[33mHere Is The Order.\u001B[0m");
+            System.out.println("\nHere Is The Order.");
             dishOrderService.showDishOrderByList(dishOrderNew);
 
             System.out.println("--------------------------------------");
@@ -245,9 +245,9 @@ public class OrderListService {
                     }
 
                     if (option == '1') {
-                        System.out.println(String.format("\u001B[33mAdded %d %s.\u001B[0m\n", quantity, dish.getDishName()));
+                        System.out.println(String.format("Added %d %s.\n", quantity, dish.getDishName()));
                     } else {
-                        System.out.println("\u001B[33mUpdated Successfully!\u001B[0m");
+                        System.out.println("Updated Successfully!");
                     }
                     Utility.readReturn();
                     break;
@@ -268,7 +268,7 @@ public class OrderListService {
                             break;
                         }
                     }
-                    System.out.println("\u001B[33mCancelled Successfully!\u001B[0m");
+                    System.out.println("Cancelled Successfully!");
                     Utility.readReturn();
                     break;
 
@@ -283,7 +283,7 @@ public class OrderListService {
                     dishOrderService.addDishOrder(orderID, dishOrderNew);
                     orderList.set(orderList.indexOf(order), new Order(orderID, tableNo, clientID, orderType, dishOrderNew, dateTime));
                     saveFile();
-                    System.out.println("\u001B[33mUpdated Successfully!\u001B[0m");
+                    System.out.println("Updated Successfully!");
                     isRun = false;
                     break;
 
