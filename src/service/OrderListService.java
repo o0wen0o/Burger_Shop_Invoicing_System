@@ -70,20 +70,25 @@ public class OrderListService {
 
         System.out.println("Bill To: " + clientListService.getClientById(clientID).getUserName());
 
-        System.out.println("\nOrder Type: (1)Dine In\t(2)Take Away");
-        System.out.print("Option >> ");
-        char selection = Utility.readSelection(new char[]{'1','2'});
-        OrderType orderType = selection == '1' ? OrderType.DINE_IN : OrderType.TAKE_AWAY;
-
         DateTimeFormatter formatter3 = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
         String dateTime = formatter3.format(LocalDateTime.now());
         System.out.println("Date Time: " + dateTime);
 
+        System.out.println("\nOrder Type: ");
+        System.out.println("(1)Dine In");
+        System.out.println("(2)Take Away");
+        System.out.print("Option >> ");
+        char selection = Utility.readSelection(new char[]{'1','2'});
+        OrderType orderType = selection == '1' ? OrderType.DINE_IN : OrderType.TAKE_AWAY;
+
+        // show menu
+        menu.showMenu();
+
         ArrayList<Dish> dishOrder = new ArrayList<>();
-        System.out.println("\n(Q) to exit. (C) to complete order.");
+        System.out.println("\u001B[33m(Q)uit. (C)omplete.\u001B[0m");
 
         while (true) {
-            System.out.print("Add To Cart >> (ID) ");
+            System.out.print("Add To Cart (ID): ");
             String dishID = Utility.readString(3).toUpperCase();
 
             // to quit the order process
@@ -138,7 +143,7 @@ public class OrderListService {
                 dishOrder.add(new Dish(dish, quantity));
             }
 
-            System.out.println(String.format("Added %d %s.\n", quantity, dish.getDishName()));
+            System.out.println(String.format("\u001B[33mAdded %d %s.\u001B[0m\n", quantity, dish.getDishName()));
         }
     }
 

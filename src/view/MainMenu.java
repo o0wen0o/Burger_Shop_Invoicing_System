@@ -184,7 +184,6 @@ public class MainMenu {
 
             switch (option) {
                 case '1':
-                    menu.showMenu();
                     orderListService.createOrder(identifyId, menu, clientListService, dishOrderService);
                     break;
 
