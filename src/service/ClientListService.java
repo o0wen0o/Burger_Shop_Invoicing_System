@@ -1,9 +1,6 @@
 package service;
 
-import domain.Admin;
 import domain.Client;
-import domain.Order;
-import sun.java2d.pipe.OutlineTextRenderer;
 import view.Utility;
 
 import java.util.ArrayList;
