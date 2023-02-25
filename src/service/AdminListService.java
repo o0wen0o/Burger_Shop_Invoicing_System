@@ -44,30 +44,6 @@ public class AdminListService {
         System.out.println();
     }
 
-    public void createAdminProfile() {
-        // not allow repeat same ID, no need input from user
-        // get last order ID
-        String lastId = adminList.get(adminList.size() - 1).getUserID();
-        // get the number part of the ID and plus 1
-        int newId = Integer.parseInt(lastId.substring(1)) + 1;
-        // form a new ID
-        String adminID = "A" + String.format("%04d", newId);
-        System.out.println("Admin ID: " + adminID);
-
-        System.out.print("Admin Name: ");
-        String name = Utility.readString(20);
-
-        System.out.print("Password: ");
-        String password = Utility.readString(20);
-
-        System.out.print("Phone number: ");
-        String phoneNumber = Utility.readString(13);
-
-        adminList.add(new Admin(adminID, name, password, phoneNumber));
-        saveFile();
-        System.out.println("\u001B[33mAdded Successfully.\u001B[0m");
-    }
-
     public List<Admin> getAllAdmins() {
         return adminList;
     }

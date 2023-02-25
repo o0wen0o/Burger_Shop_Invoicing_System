@@ -43,7 +43,17 @@ public class Menu {
         System.out.println();
     }
 
-    public void showDish(Dish dish) {
+    public void searchDishByID() {
+        System.out.print("Please enter dish ID: ");
+        String dishID = Utility.readString(3).toUpperCase();
+
+        if (!isExist(dishID)) {
+            System.out.println("Dish does not exist. Please try again.");
+            return;
+        }
+
+        Dish dish = getDishByID(dishID);
+
         System.out.println(String.format("%54s", " ").replace(' ', '-'));
 
         String str = String.format("|%-10s|%-30s|%-10s|", "Dish ID", "Dish Name", "Unit Price");

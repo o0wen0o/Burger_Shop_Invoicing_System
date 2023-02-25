@@ -32,53 +32,14 @@ public class MainMenu {
             System.out.println("--------------------------------------");
 
             System.out.print("Option >> ");
-            option = Utility.readSelection(new char[]{'1','2','3'});
+            option = Utility.readSelection(new char[]{'1', '2', '3'});
 
             switch (option) {
                 case '1':
-                    System.out.print("--------------------------------------\n");
-                    System.out.print("Admin/Client ID: ");
-                    identifyId = Utility.readString(5).toUpperCase();
-                    System.out.print("Password: ");
-                    String pwd = Utility.readString(20);
-
-                    String menu = "None";
-                    for (Admin admin : adminListService.getAllAdmins()) {
-                        if (admin.getUserID().equals(identifyId) && admin.getPassword().equals(pwd)) {
-                            menu = "Admin";
-                            break;
-                        }
-                    }
-
-                    // if the user is admin
-                    if ("Admin".equals(menu)) {
-                        adminMenu();
-                        break;
-                    }
-
-                    for (Client client : clientListService.getAllClients()) {
-                        if (client.getUserID().equals(identifyId) && client.getPassword().equals(pwd)) {
-                            menu = "Client";
-                            break;
-                        }
-                    }
-
-                    // if the user is customer
-                    if ("Client".equals(menu)) {
-                        clientMenu();
-                        break;
-                    }
-
-                    // if user not found
-                    if ("None".equals(menu)) {
-                        System.out.println("--------------------------------------");
-                        System.out.print("ID And Password Incorrect. Please Try Again.\n");
-                        Utility.readReturn();
-                    }
+                    login();
                     break;
 
                 case '2':
-                    System.out.print("\nPlease enter your information.[Customer Only]\n");// login and register
                     clientListService.createClientProfile();
                     break;
 
@@ -94,7 +55,48 @@ public class MainMenu {
         }
     }
 
-    public void adminMenu() {
+    private void login() {
+        System.out.print("--------------------------------------\n");
+        System.out.print("Admin/Client ID: ");
+        identifyId = Utility.readString(5).toUpperCase();
+        System.out.print("Password: ");
+        String pwd = Utility.readString(20);
+
+        String menu = "None";
+
+        for (Admin admin : adminListService.getAllAdmins()) {
+            if (admin.getUserID().equals(identifyId) && admin.getPassword().equals(pwd)) {
+                menu = "Admin";
+                break;
+            }
+        }
+
+        // if the user is admin
+        if ("Admin".equals(menu)) {
+            adminMenu();
+            return;
+        }
+
+        for (Client client : clientListService.getAllClients()) {
+            if (client.getUserID().equals(identifyId) && client.getPassword().equals(pwd)) {
+                menu = "Client";
+                break;
+            }
+        }
+
+        // if the user is customer
+        if ("Client".equals(menu)) {
+            clientMenu();
+            return;
+        }
+
+        // if user not found
+        System.out.println("--------------------------------------");
+        System.out.print("ID And Password Incorrect. Please Try Again.\n");
+        Utility.readReturn();
+    }
+
+    private void adminMenu() {
         char option;
         boolean isRun = true;
 
@@ -106,14 +108,13 @@ public class MainMenu {
             System.out.println("(2) Cancel Order");
             System.out.println("(3) View Billing Statement");
             System.out.println("(4) Search Dish");
-            System.out.println("(5) Create Admin Profile");
-            System.out.println("(6) Show Admin Profile");
-            System.out.println("(7) Show Client Profile");
-            System.out.println("(8) Quit");
+            System.out.println("(5) Show Admin Profile");
+            System.out.println("(6) Show Client Profile");
+            System.out.println("(7) Quit");
             System.out.println("--------------------------------------");
 
             System.out.print("Option >> ");
-            option = Utility.readSelection(new char[]{'1','2','3','4','5','6','7','8'});
+            option = Utility.readSelection(new char[]{'1', '2', '3', '4', '5', '6', '7', '8'});
 
             switch (option) {
                 case '1':
@@ -129,31 +130,18 @@ public class MainMenu {
                     break;
 
                 case '4':
-                    System.out.print("Please enter dish ID: ");
-                    String dishID = Utility.readString(3).toUpperCase();
-
-                    if (!menu.isExist(dishID)) {
-                        System.out.println("Dish does not exist. Please try again.");
-                        break;
-                    }
-
-                    Dish dish = menu.getDishByID(dishID);
-                    menu.showDish(dish);
+                    menu.searchDishByID();
                     break;
 
                 case '5':
-                    adminListService.createAdminProfile();
-                    break;
-
-                case '6':
                     adminListService.showAdminList();
                     break;
 
-                case '7':
+                case '6':
                     clientListService.showClientList();
                     break;
 
-                case '8':
+                case '7':
                     System.out.print("Logout account? (Y/N): ");
                     char exit = Utility.readConfirmSelection();
                     if (exit == 'Y') {
@@ -166,7 +154,7 @@ public class MainMenu {
         }
     }
 
-    public void clientMenu() {
+    private void clientMenu() {
         char option;
         boolean isRun = true;
 
@@ -180,7 +168,7 @@ public class MainMenu {
             System.out.println("--------------------------------------");
 
             System.out.print("Option >> ");
-            option = Utility.readSelection(new char[]{'1','2','3'});
+            option = Utility.readSelection(new char[]{'1', '2', '3'});
 
             switch (option) {
                 case '1':

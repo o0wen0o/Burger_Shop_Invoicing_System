@@ -45,6 +45,7 @@ public class ClientListService {
     }
 
     public void createClientProfile() {
+        System.out.print("\nPlease enter your information.[Customer Only]\n");// login and register
         // not allow repeat same ID, no need input from user
         // get last order ID
         String lastId = clientList.get(clientList.size() - 1).getUserID();
@@ -65,7 +66,7 @@ public class ClientListService {
 
         clientList.add(new Client(clientID, name, password, phoneNumber));
         saveFile();
-        System.out.println("\u001B[33mAdded Successfully.\u001B[0m");
+        System.out.println("Added Successfully.");
     }
 
     public Client getClientById(String clientID) {
