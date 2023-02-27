@@ -1,6 +1,7 @@
 package service;
 
 import domain.Dish;
+import domain.Order;
 import view.Utility;
 
 import java.util.ArrayList;
@@ -43,10 +44,34 @@ public class Menu {
         System.out.println();
     }
 
-    public void searchDishByID() {
+    public void createDish() {
+        // not allow repeat same ID, no need input from user
+        // get last order ID
+        String lastId = menu.get(menu.size() - 1).getDishID();
+        // get the number part of the ID and plus 1
+        int newId = Integer.parseInt(lastId.substring(1)) + 1;
+        // form a new ID
+        String dishID = "D" + String.format("%02d", newId);
+        System.out.println("Dish ID: " + dishID);
+
+        System.out.print("Dish Name >> ");
+        String dishName = Utility.readString(30);
+
+        System.out.print("Unit Price >> ");
+        double unitPrice = Utility.readDouble(6);
+
+        menu.add(new Dish(dishID, dishName, unitPrice));
+        saveFile();
+        System.out.println("Created Successfully!");
+    }
+
+    public void updateDish() {
+        showMenu();
+
         System.out.print("Please enter dish ID: ");
         String dishID = Utility.readString(3).toUpperCase();
 
+        // check if dish ID exist
         if (!isExist(dishID)) {
             System.out.println("Dish does not exist. Please try again.");
             return;
@@ -54,25 +79,38 @@ public class Menu {
 
         Dish dish = getDishByID(dishID);
 
-        System.out.println(String.format("%54s", " ").replace(' ', '-'));
+        System.out.println("Press 'Enter' if remain unchanged. ");
+        System.out.print("Dish Name >> ");
+        String dishName = Utility.readString(30, dish.getDishName());
 
-        String str = String.format("|%-10s|%-30s|%-10s|", "Dish ID", "Dish Name", "Unit Price");
-        System.out.println(str);
+        System.out.print("Unit Price >> ");
+        double unitPrice = Utility.readDouble(6, dish.getUnitPrice());
 
-        System.out.println(String.format("%54s", " ").replace(' ', '-'));
+        menu.set(menu.indexOf(dish), new Dish(dishID, dishName, unitPrice));
+        saveFile();
+        System.out.println("Updated Successfully!");
+    }
 
-        System.out.println(dish);
+    public void deleteDish() {
+        showMenu();
 
-        System.out.println(String.format("%54s", " ").replace(' ', '-'));
-        System.out.println();
+        System.out.print("Please enter dish ID: ");
+        String dishID = Utility.readString(3).toUpperCase();
+
+        // check if dish ID exist
+        if (!isExist(dishID)) {
+            System.out.println("Dish does not exist. Please try again.");
+            return;
+        }
+
+        Dish dish = getDishByID(dishID);
+
+        menu.remove(dish);
+        saveFile();
     }
 
     public boolean isExist(String dishID) {
         return menu.contains(getDishByID(dishID.toUpperCase()));
-    }
-
-    public List<Dish> getMenu() {
-        return menu;
     }
 
     public Dish getDishByID(String dishID) {
@@ -84,5 +122,15 @@ public class Menu {
             }
         }
         return null;
+    }
+
+    private void saveFile() {
+        String str = "";
+
+        for (Dish dish : menu) {
+            str += String.format("%s,%s,%s\n", dish.getDishID(), dish.getDishName(), dish.getUnitPrice());
+        }
+
+        Utility.saveFile(srcPath, str);
     }
 }

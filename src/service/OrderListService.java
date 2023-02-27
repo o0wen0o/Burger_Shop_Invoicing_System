@@ -126,7 +126,7 @@ public class OrderListService {
             Dish dish = menu.getDishByID(dishID);
 
             System.out.print("Quantity >> ");
-            int quantity = Utility.readInt();
+            int quantity = Utility.readInt(6);
 
             boolean isNewDish = true;
             // if the dish already ordered
@@ -222,7 +222,7 @@ public class OrderListService {
                     Dish dish = menu.getDishByID(dishID);
 
                     System.out.print("Quantity >> ");
-                    int quantity = Utility.readInt();
+                    int quantity = Utility.readInt(6);
 
                     boolean isNewDish = true;
                     // if the dish already ordered

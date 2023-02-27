@@ -32,7 +32,7 @@ public class MainMenu {
             System.out.println("--------------------------------------");
 
             System.out.print("Option >> ");
-            option = Utility.readSelection(new char[]{'1', '2', '3'});
+            option = Utility.readSelection(new char[]{'1', '2'});
 
             switch (option) {
                 case '1':
@@ -40,10 +40,6 @@ public class MainMenu {
                     break;
 
                 case '2':
-                    clientListService.createClientProfile();
-                    break;
-
-                case '3':
                     System.out.print("End the program? (Y/N): ");
                     char exit = Utility.readConfirmSelection();
                     if (exit == 'Y') {
@@ -96,6 +92,39 @@ public class MainMenu {
         Utility.readReturn();
     }
 
+    private void clientMenu() {
+        char option;
+        boolean isRun = true;
+
+        while (isRun) {
+            System.out.println("\n--------------------------------------");
+            System.out.println("<< Welcome To Burger Shop System >>");
+            System.out.println("--------------------------------------");
+            System.out.println("(1) Create Order");
+            System.out.println("(2) Quit");
+            System.out.println("--------------------------------------");
+
+            System.out.print("Option >> ");
+            option = Utility.readSelection(new char[]{'1', '2', '3'});
+
+            switch (option) {
+                case '1':
+                    orderListService.createOrder(identifyId, menu, clientListService, dishOrderService);
+                    break;
+
+                case '2':
+                    System.out.print("Logout account? (Y/N): ");
+                    char exit = Utility.readConfirmSelection();
+                    if (exit == 'Y') {
+                        isRun = false;
+                        System.out.print("Thank You For Using The System.\n");
+                    }
+                    break;
+            }
+            Utility.readReturn();
+        }
+    }
+
     private void adminMenu() {
         char option;
         boolean isRun = true;
@@ -107,14 +136,12 @@ public class MainMenu {
             System.out.println("(1) Update/Maintain Order");
             System.out.println("(2) Cancel Order");
             System.out.println("(3) View Billing Statement");
-            System.out.println("(4) Search Dish");
-            System.out.println("(5) Show Admin Profile");
-            System.out.println("(6) Show Client Profile");
-            System.out.println("(7) Quit");
+            System.out.println("(4) Update Menu");
+            System.out.println("(5) Quit");
             System.out.println("--------------------------------------");
 
             System.out.print("Option >> ");
-            option = Utility.readSelection(new char[]{'1', '2', '3', '4', '5', '6', '7', '8'});
+            option = Utility.readSelection(new char[]{'1', '2', '3', '4', '5'});
 
             switch (option) {
                 case '1':
@@ -130,18 +157,10 @@ public class MainMenu {
                     break;
 
                 case '4':
-                    menu.searchDishByID();
+                    updateMenu();
                     break;
 
                 case '5':
-                    adminListService.showAdminList();
-                    break;
-
-                case '6':
-                    clientListService.showClientList();
-                    break;
-
-                case '7':
                     System.out.print("Logout account? (Y/N): ");
                     char exit = Utility.readConfirmSelection();
                     if (exit == 'Y') {
@@ -154,37 +173,40 @@ public class MainMenu {
         }
     }
 
-    private void clientMenu() {
+    public void updateMenu() {
         char option;
         boolean isRun = true;
 
         while (isRun) {
             System.out.println("\n--------------------------------------");
-            System.out.println("<< Welcome To Burger Shop System >>");
-            System.out.println("--------------------------------------");
-            System.out.println("(1) Create Order");
-            System.out.println("(2) View Billing Statements");
-            System.out.println("(3) Quit");
+            System.out.println("(1) Create Dish");
+            System.out.println("(2) Update Dish");
+            System.out.println("(3) Delete Dish");
+            System.out.println("(4) Quit");
             System.out.println("--------------------------------------");
 
             System.out.print("Option >> ");
-            option = Utility.readSelection(new char[]{'1', '2', '3'});
+            option = Utility.readSelection(new char[]{'1', '2', '3', '4'});
 
+            String dishID;
             switch (option) {
                 case '1':
-                    orderListService.createOrder(identifyId, menu, clientListService, dishOrderService);
+                    menu.createDish();
                     break;
 
                 case '2':
-                    orderListService.showOrderByID(clientListService, dishOrderService);
+                    menu.updateDish();
                     break;
 
                 case '3':
-                    System.out.print("Logout account? (Y/N): ");
+                    menu.deleteDish();
+                    break;
+
+                case '4':
+                    System.out.print("Quit? (Y/N): ");
                     char exit = Utility.readConfirmSelection();
                     if (exit == 'Y') {
                         isRun = false;
-                        System.out.print("Thank You For Using The System.\n");
                     }
                     break;
             }

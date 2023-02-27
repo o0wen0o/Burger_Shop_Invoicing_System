@@ -82,12 +82,46 @@ public class Utility {
     }
 
     // read integer which not greater than 6
-    public static int readInt() {
+    public static int readInt(int limit) {
         int n;
         for (; ; ) {
-            String str = readKeyBoard(6, false);
+            String str = readKeyBoard(limit, false);
             try {
                 n = Integer.parseInt(str);
+                break;
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid Input! Please Try Again: ");
+            }
+        }
+        return n;
+    }
+
+    // read double which not greater than 8
+    public static double readDouble(int limit) {
+        double n;
+        for (; ; ) {
+            String str = readKeyBoard(limit, false);
+            try {
+                n = Double.parseDouble(str);
+                break;
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid Input! Please Try Again: ");
+            }
+        }
+        return n;
+    }
+
+    public static double readDouble(int limit, double defaultValue) {
+        double n;
+        for (; ; ) {
+            String str = readKeyBoard(limit, false);
+
+            if (str.equals("")) {
+                return defaultValue;
+            }
+
+            try {
+                n = Double.parseDouble(str);
                 break;
             } catch (NumberFormatException e) {
                 System.out.print("Invalid Input! Please Try Again: ");
@@ -99,6 +133,13 @@ public class Utility {
     // read a string which not greater than the limit
     public static String readString(int limit) {
         return readKeyBoard(limit, false);
+    }
+
+    // read a string which not greater than the limit, return current value if
+    // user does not intend to change to new value
+    public static String readString(int limit, String defaultValue) {
+        String str = readKeyBoard(limit, true);
+        return str.equals("") ? defaultValue : str;
     }
 
     // read 'Y' or 'N' only
