@@ -107,6 +107,7 @@ public class Menu {
 
         menu.remove(dish);
         saveFile();
+        System.out.println("Deleted Successfully!");
     }
 
     public boolean isExist(String dishID) {
