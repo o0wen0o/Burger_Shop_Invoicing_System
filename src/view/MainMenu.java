@@ -32,7 +32,7 @@ public class MainMenu {
             System.out.println("--------------------------------------");
 
             System.out.print("Option >> ");
-            option = Utility.readSelection(new char[]{'1', '2'});
+            option = Utility.readSelection(new char[]{'1', '2', '3'});
 
             switch (option) {
                 case '1':
@@ -105,7 +105,7 @@ public class MainMenu {
             System.out.println("--------------------------------------");
 
             System.out.print("Option >> ");
-            option = Utility.readSelection(new char[]{'1', '2', '3'});
+            option = Utility.readSelection(new char[]{'1', '2'});
 
             switch (option) {
                 case '1':
