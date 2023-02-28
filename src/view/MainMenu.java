@@ -2,7 +2,6 @@ package view;
 
 import domain.Admin;
 import domain.Client;
-import domain.Dish;
 import service.*;
 
 /**
@@ -40,6 +39,10 @@ public class MainMenu {
                     break;
 
                 case '2':
+                    clientListService.createClientProfile();
+                    break;
+
+                case '3':
                     System.out.print("End the program? (Y/N): ");
                     char exit = Utility.readConfirmSelection();
                     if (exit == 'Y') {
@@ -92,39 +95,6 @@ public class MainMenu {
         Utility.readReturn();
     }
 
-    private void clientMenu() {
-        char option;
-        boolean isRun = true;
-
-        while (isRun) {
-            System.out.println("\n--------------------------------------");
-            System.out.println("<< Welcome To Burger Shop System >>");
-            System.out.println("--------------------------------------");
-            System.out.println("(1) Create Order");
-            System.out.println("(2) Quit");
-            System.out.println("--------------------------------------");
-
-            System.out.print("Option >> ");
-            option = Utility.readSelection(new char[]{'1', '2'});
-
-            switch (option) {
-                case '1':
-                    orderListService.createOrder(identifyId, menu, clientListService, dishOrderService);
-                    break;
-
-                case '2':
-                    System.out.print("Logout account? (Y/N): ");
-                    char exit = Utility.readConfirmSelection();
-                    if (exit == 'Y') {
-                        isRun = false;
-                        System.out.print("Thank You For Using The System.\n");
-                    }
-                    break;
-            }
-            Utility.readReturn();
-        }
-    }
-
     private void adminMenu() {
         char option;
         boolean isRun = true;
@@ -153,11 +123,13 @@ public class MainMenu {
                     break;
 
                 case '3':
-                    orderListService.showOrderByID(clientListService, dishOrderService);
+                    System.out.print("Please enter order ID: ");
+                    String orderID = Utility.readString(5).toUpperCase();
+                    orderListService.showOrderByID(orderID, clientListService, dishOrderService);
                     break;
 
                 case '4':
-                    updateMenu();
+                    menu.updateMenu();
                     break;
 
                 case '5':
@@ -173,40 +145,32 @@ public class MainMenu {
         }
     }
 
-    public void updateMenu() {
+    private void clientMenu() {
         char option;
         boolean isRun = true;
 
         while (isRun) {
             System.out.println("\n--------------------------------------");
-            System.out.println("(1) Create Dish");
-            System.out.println("(2) Update Dish");
-            System.out.println("(3) Delete Dish");
-            System.out.println("(4) Quit");
+            System.out.println("<< Welcome To Burger Shop System >>");
+            System.out.println("--------------------------------------");
+            System.out.println("(1) Create Order");
+            System.out.println("(2) Quit");
             System.out.println("--------------------------------------");
 
             System.out.print("Option >> ");
-            option = Utility.readSelection(new char[]{'1', '2', '3', '4'});
+            option = Utility.readSelection(new char[]{'1', '2'});
 
-            String dishID;
             switch (option) {
                 case '1':
-                    menu.createDish();
+                    orderListService.createOrder(identifyId, menu, clientListService, dishOrderService);
                     break;
 
                 case '2':
-                    menu.updateDish();
-                    break;
-
-                case '3':
-                    menu.deleteDish();
-                    break;
-
-                case '4':
-                    System.out.print("Quit? (Y/N): ");
+                    System.out.print("Logout account? (Y/N): ");
                     char exit = Utility.readConfirmSelection();
                     if (exit == 'Y') {
                         isRun = false;
+                        System.out.print("Thank You For Using The System.\n");
                     }
                     break;
             }

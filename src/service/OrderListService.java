@@ -32,9 +32,7 @@ public class OrderListService {
         }
     }
 
-    public void showOrderByID(ClientListService clientListService, DishOrderService dishOrderService) {
-        System.out.print("Please enter order ID: ");
-        String orderID = Utility.readString(5).toUpperCase();
+    public void showOrderByID(String orderID, ClientListService clientListService, DishOrderService dishOrderService) {
         Order order = getOrderById(orderID);
 
         if (order == null) {
@@ -114,6 +112,10 @@ public class OrderListService {
                 orderList.add(new Order(orderID, tableNo, clientID, orderType, dishOrder, dateTime));
                 saveFile();
                 System.out.println("Created Successfully!");
+
+                // show the order
+                Utility.readReturn();
+                showOrderByID(orderID, clientListService, dishOrderService);
                 break;
             }
 

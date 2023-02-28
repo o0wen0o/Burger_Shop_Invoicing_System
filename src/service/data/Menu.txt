@@ -1,4 +1,4 @@
-D01,Spicy Chicken Burger,10.0
+D01,Spicy Chicken Burger,12.0
 D02,Nuggets 6Pcs,7.0
 D03,CocaCola,5.0
 D04,French Fries,6.0

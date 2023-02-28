@@ -114,7 +114,7 @@ public class Utility {
     public static double readDouble(int limit, double defaultValue) {
         double n;
         for (; ; ) {
-            String str = readKeyBoard(limit, false);
+            String str = readKeyBoard(limit, true);
 
             if (str.equals("")) {
                 return defaultValue;

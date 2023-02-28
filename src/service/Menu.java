@@ -1,7 +1,6 @@
 package service;
 
 import domain.Dish;
-import domain.Order;
 import view.Utility;
 
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ public class Menu {
     }
 
     public void showMenu() {
-        System.out.println("\n\u001B[33mMenu:\u001B[0m");
+        System.out.println("\nMenu:");
         System.out.println(String.format("%54s", " ").replace(' ', '-'));
 
         String str = String.format("|%-10s|%-30s|%-10s|", "Dish ID", "Dish Name", "Unit Price");
@@ -42,6 +41,47 @@ public class Menu {
 
         System.out.println(String.format("%54s", " ").replace(' ', '-'));
         System.out.println();
+    }
+
+    public void updateMenu() {
+        char option;
+        boolean isRun = true;
+
+        while (isRun) {
+            System.out.println("\n--------------------------------------");
+            System.out.println("(1) Create Dish");
+            System.out.println("(2) Update Dish");
+            System.out.println("(3) Delete Dish");
+            System.out.println("(4) Quit");
+            System.out.println("--------------------------------------");
+
+            System.out.print("Option >> ");
+            option = Utility.readSelection(new char[]{'1', '2', '3', '4'});
+
+            String dishID;
+            switch (option) {
+                case '1':
+                    createDish();
+                    break;
+
+                case '2':
+                    updateDish();
+                    break;
+
+                case '3':
+                    deleteDish();
+                    break;
+
+                case '4':
+                    System.out.print("Quit? (Y/N): ");
+                    char exit = Utility.readConfirmSelection();
+                    if (exit == 'Y') {
+                        isRun = false;
+                    }
+                    break;
+            }
+            Utility.readReturn();
+        }
     }
 
     public void createDish() {
