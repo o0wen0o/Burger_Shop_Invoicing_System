@@ -58,7 +58,6 @@ public class Menu {
             System.out.print("Option >> ");
             option = Utility.readSelection(new char[]{'1', '2', '3', '4'});
 
-            String dishID;
             switch (option) {
                 case '1':
                     createDish();

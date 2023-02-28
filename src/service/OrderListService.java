@@ -152,7 +152,7 @@ public class OrderListService {
 
     // update order by ID
     public void updateOrder(Menu menu, ClientListService clientListService, DishOrderService dishOrderService) {
-        System.out.print("Please enter order ID: ");
+        System.out.print("Please enter order ID (Ex.O0001): ");
         String orderID = Utility.readString(5).toUpperCase();
         Order order = getOrderById(orderID);
 
@@ -302,7 +302,7 @@ public class OrderListService {
 
     // cancel order by ID
     public void cancelOrder(DishOrderService dishOrderService) {
-        System.out.print("Please enter order ID: ");
+        System.out.print("Please enter order ID (Ex.O0001): ");
         String orderID = Utility.readString(5).toUpperCase().toUpperCase();
         Order order = getOrderById(orderID);
 

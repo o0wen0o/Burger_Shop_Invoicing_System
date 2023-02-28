@@ -56,7 +56,7 @@ public class MainMenu {
 
     private void login() {
         System.out.print("--------------------------------------\n");
-        System.out.print("Admin/Client ID: ");
+        System.out.print("Admin/Client ID (Ex.A0001/C0001): ");
         identifyId = Utility.readString(5).toUpperCase();
         System.out.print("Password: ");
         String pwd = Utility.readString(20);
@@ -123,7 +123,7 @@ public class MainMenu {
                     break;
 
                 case '3':
-                    System.out.print("Please enter order ID: ");
+                    System.out.print("Please enter order ID (Ex.O0001): ");
                     String orderID = Utility.readString(5).toUpperCase();
                     orderListService.showOrderByID(orderID, clientListService, dishOrderService);
                     break;

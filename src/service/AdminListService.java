@@ -48,7 +48,6 @@ public class AdminListService {
         return adminList;
     }
 
-
     private void saveFile() {
         String str = "";
 
