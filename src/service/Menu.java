@@ -10,7 +10,7 @@ import java.util.List;
  * @author o0wen0o
  * @create 2023-02-17 3:36 PM
  */
-public class Menu {
+public class Menu implements Service{
     private List<Dish> menu = new ArrayList<>();
     private String srcPath = "Menu.txt";
 
@@ -164,7 +164,7 @@ public class Menu {
         return null;
     }
 
-    private void saveFile() {
+    public void saveFile() {
         String str = "";
 
         for (Dish dish : menu) {

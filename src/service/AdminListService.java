@@ -10,7 +10,7 @@ import java.util.List;
  * @author o0wen0o
  * @create 2023-02-22 8:28 PM
  */
-public class AdminListService {
+public class AdminListService implements Service {
     private List<Admin> adminList = new ArrayList<>();
     private String srcPath = "AdminData.txt";
 
@@ -48,7 +48,7 @@ public class AdminListService {
         return adminList;
     }
 
-    private void saveFile() {
+    public void saveFile() {
         String str = "";
 
         for (Admin admin : adminList) {

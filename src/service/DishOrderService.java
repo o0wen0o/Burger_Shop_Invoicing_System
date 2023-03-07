@@ -11,7 +11,7 @@ import java.util.*;
  * @author o0wen0o
  * @create 2023-02-17 5:35 PM
  */
-public class DishOrderService {
+public class DishOrderService implements Service {
     private Map<String, ArrayList<Dish>> dishOrderList = new HashMap<>();
     private String srcPath = "DishOrder.txt";
 
@@ -93,7 +93,7 @@ public class DishOrderService {
         return dishOrderList.get(orderID);
     }
 
-    private void saveFile() {
+    public void saveFile() {
         String str = "";
 
         for (Map.Entry<String, ArrayList<Dish>> entry : dishOrderList.entrySet()) {

@@ -13,7 +13,7 @@ import java.util.List;
  * @author o0wen0o
  * @create 2023-02-17 3:35 PM
  */
-public class OrderListService {
+public class OrderListService implements Service {
     private List<Order> orderList = new ArrayList<>();
     private String srcPath = "OrderData.txt";
 
@@ -331,7 +331,7 @@ public class OrderListService {
         return null;
     }
 
-    private void saveFile() {
+    public void saveFile() {
         String str = "";
 
         for (Order order : orderList) {

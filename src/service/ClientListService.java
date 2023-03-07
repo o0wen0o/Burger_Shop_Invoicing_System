@@ -10,7 +10,7 @@ import java.util.List;
  * @author o0wen0o
  * @create 2023-02-17 3:37 PM
  */
-public class ClientListService {
+public class ClientListService implements Service {
     private List<Client> clientList = new ArrayList<>();
     private String srcPath = "ClientData.txt";
 
@@ -84,7 +84,7 @@ public class ClientListService {
         return clientList;
     }
 
-    private void saveFile() {
+    public void saveFile() {
         String str = "";
 
         for (Client client : clientList) {
