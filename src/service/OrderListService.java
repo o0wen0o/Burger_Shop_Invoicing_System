@@ -72,19 +72,14 @@ public class OrderListService implements Service {
         String dateTime = formatter3.format(LocalDateTime.now());
         System.out.println("Date Time: " + dateTime);
 
-        System.out.println("\nOrder Type: ");
-        System.out.println("(1)Dine In");
-        System.out.println("(2)Take Away");
-        System.out.print("Option >> ");
-        char selection = Utility.readSelection(new char[]{'1', '2'});
-        OrderType orderType = selection == '1' ? OrderType.DINE_IN : OrderType.TAKE_AWAY;
+        OrderType orderType = getOrderType();
 
         // show menu
         menu.showMenu();
 
         ArrayList<Dish> dishOrder = new ArrayList<>();
-        System.out.println("(1) Enter \'1\' To Complete Order");
-        System.out.println("(2) Enter \'2\' To Cancel Order");
+        System.out.println("(1) Enter '1' To Complete Order");
+        System.out.println("(2) Enter '2' To Cancel Order");
 
         while (true) {
             System.out.print("Add To Cart (Enter Dish ID): ");
@@ -146,7 +141,7 @@ public class OrderListService implements Service {
                 dishOrder.add(new Dish(dish, quantity));
             }
 
-            System.out.println(String.format("Added %d %s.\n", quantity, dish.getDishName()));
+            System.out.printf("Added %d %s.\n%n", quantity, dish.getDishName());
         }
     }
 
@@ -171,12 +166,7 @@ public class OrderListService implements Service {
         String dateTime = formatter3.format(LocalDateTime.now());
         System.out.println("Date Time: " + dateTime);
 
-        System.out.println("\nOrder Type: ");
-        System.out.println("(1)Dine In");
-        System.out.println("(2)Take Away");
-        System.out.print("Option >> ");
-        char selection = Utility.readSelection(new char[]{'1', '2'});
-        OrderType orderType = selection == '1' ? OrderType.DINE_IN : OrderType.TAKE_AWAY;
+        OrderType orderType = getOrderType();
 
         // copy the dishOrder
         ArrayList<Dish> dishOrderNew = new ArrayList<>();
@@ -247,7 +237,7 @@ public class OrderListService implements Service {
                     }
 
                     if (option == '1') {
-                        System.out.println(String.format("Added %d %s.\n", quantity, dish.getDishName()));
+                        System.out.printf("Added %d %s.\n%n", quantity, dish.getDishName());
                     } else {
                         System.out.println("Updated Successfully!");
                     }
@@ -332,12 +322,21 @@ public class OrderListService implements Service {
     }
 
     public void saveFile() {
-        String str = "";
+        StringBuilder str = new StringBuilder();
 
         for (Order order : orderList) {
-            str += String.format("%s,%s,%s,%s,%s\n", order.getOrderID(), order.getTableNo(), order.getClientID(), order.getOrderType(), order.getDateTime());
+            str.append(String.format("%s,%s,%s,%s,%s\n", order.getOrderID(), order.getTableNo(), order.getClientID(), order.getOrderType(), order.getDateTime()));
         }
 
-        Utility.saveFile(srcPath, str);
+        Utility.saveFile(srcPath, str.toString());
+    }
+
+    private OrderType getOrderType() {
+        System.out.println("\nOrder Type: ");
+        System.out.println("(1)Dine In");
+        System.out.println("(2)Take Away");
+        System.out.print("Option >> ");
+        char selection = Utility.readSelection(new char[]{'1', '2'});
+        return selection == '1' ? OrderType.DINE_IN : OrderType.TAKE_AWAY;
     }
 }

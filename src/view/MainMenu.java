@@ -103,7 +103,7 @@ public class MainMenu {
             System.out.println("\n--------------------------------------");
             System.out.println("<< Welcome To Burger Shop System >>");
             System.out.println("--------------------------------------");
-            System.out.println("(1) Update/Maintain Order");
+            System.out.println("(1) Update Order");
             System.out.println("(2) Cancel Order");
             System.out.println("(3) View Billing Statement");
             System.out.println("(4) Update Menu");

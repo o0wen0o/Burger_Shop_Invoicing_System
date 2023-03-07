@@ -49,12 +49,12 @@ public class AdminListService implements Service {
     }
 
     public void saveFile() {
-        String str = "";
+        StringBuilder str = new StringBuilder();
 
         for (Admin admin : adminList) {
-            str += String.format("%s,%s,%s,%s\n", admin.getUserID(), admin.getUserName(), admin.getPassword(), admin.getPhoneNumber());
+            str.append(String.format("%s,%s,%s,%s\n", admin.getUserID(), admin.getUserName(), admin.getPassword(), admin.getPhoneNumber()));
         }
 
-        Utility.saveFile(srcPath, str);
+        Utility.saveFile(srcPath, str.toString());
     }
 }

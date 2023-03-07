@@ -61,7 +61,7 @@ public class DishOrderService implements Service {
         }
 
         System.out.println(String.format("%76s", " ").replace(' ', '-'));
-        System.out.println(String.format("|%-10s|%-30s|%-10s|%-10s|%-10s|", "Dish ID", "Dish Name", "Quantity", "Unit Price", "Amount"));
+        System.out.printf("|%-10s|%-30s|%-10s|%-10s|%-10s|%n", "Dish ID", "Dish Name", "Quantity", "Unit Price", "Amount");
         System.out.println(String.format("%76s", " ").replace(' ', '-'));
 
         double total = 0;
@@ -70,7 +70,7 @@ public class DishOrderService implements Service {
             double unitPrice = dish.getUnitPrice();
             double amount = quantity * unitPrice;
             total += amount;
-            System.out.println(String.format("|%-10s|%-30s|%-10d|%-10.2f|%-10.2f|", dish.getDishID(), dish.getDishName(), quantity, unitPrice, amount));
+            System.out.printf("|%-10s|%-30s|%-10d|%-10.2f|%-10.2f|%n", dish.getDishID(), dish.getDishName(), quantity, unitPrice, amount);
         }
 
         System.out.println(String.format("%76s", " ").replace(' ', '-'));
@@ -94,19 +94,19 @@ public class DishOrderService implements Service {
     }
 
     public void saveFile() {
-        String str = "";
+        StringBuilder str = new StringBuilder();
 
         for (Map.Entry<String, ArrayList<Dish>> entry : dishOrderList.entrySet()) {
             String key = entry.getKey();
             ArrayList<Dish> value = entry.getValue();
 
-            str += key;
+            str.append(key);
             for (Dish dish : value) {
-                str += String.format(",%s,%s", dish.getDishID(), dish.getQuantity());
+                str.append(String.format(",%s,%s", dish.getDishID(), dish.getQuantity()));
             }
-            str += "\n";
+            str.append("\n");
         }
 
-        Utility.saveFile(srcPath, str);
+        Utility.saveFile(srcPath, str.toString());
     }
 }

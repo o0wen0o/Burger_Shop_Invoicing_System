@@ -79,7 +79,6 @@ public class Menu implements Service{
                     }
                     break;
             }
-            Utility.readReturn();
         }
     }
 
@@ -107,14 +106,10 @@ public class Menu implements Service{
     public void updateDish() {
         showMenu();
 
-        System.out.print("Please enter dish ID: ");
-        String dishID = Utility.readString(3).toUpperCase();
+        String dishID = searchDish();
 
-        // check if dish ID exist
-        if (!isExist(dishID)) {
-            System.out.println("Dish does not exist. Please try again.");
+        if (dishID == null)
             return;
-        }
 
         Dish dish = getDishByID(dishID);
 
@@ -133,14 +128,10 @@ public class Menu implements Service{
     public void deleteDish() {
         showMenu();
 
-        System.out.print("Please enter dish ID: ");
-        String dishID = Utility.readString(3).toUpperCase();
+        String dishID = searchDish();
 
-        // check if dish ID exist
-        if (!isExist(dishID)) {
-            System.out.println("Dish does not exist. Please try again.");
+        if (dishID == null)
             return;
-        }
 
         Dish dish = getDishByID(dishID);
 
@@ -165,12 +156,26 @@ public class Menu implements Service{
     }
 
     public void saveFile() {
-        String str = "";
+        StringBuilder str = new StringBuilder();
 
         for (Dish dish : menu) {
-            str += String.format("%s,%s,%s\n", dish.getDishID(), dish.getDishName(), dish.getUnitPrice());
+            str.append(String.format("%s,%s,%s\n", dish.getDishID(), dish.getDishName(), dish.getUnitPrice()));
         }
 
-        Utility.saveFile(srcPath, str);
+        Utility.saveFile(srcPath, str.toString());
+    }
+
+    // search dish by ID, if exist then return the dishID, if not then return null
+    private String searchDish() {
+        System.out.print("Please enter dish ID: ");
+        String dishID = Utility.readString(3).toUpperCase();
+
+        // check if dish ID exist
+        if (!isExist(dishID)) {
+            System.out.println("Dish does not exist. Please try again.");
+            return null;
+        }
+
+        return dishID;
     }
 }

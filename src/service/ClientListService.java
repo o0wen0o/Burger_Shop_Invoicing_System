@@ -85,12 +85,12 @@ public class ClientListService implements Service {
     }
 
     public void saveFile() {
-        String str = "";
+        StringBuilder str = new StringBuilder();
 
         for (Client client : clientList) {
-            str += String.format("%s,%s,%s,%s\n", client.getUserID(), client.getUserName(), client.getPassword(), client.getPhoneNumber());
+            str.append(String.format("%s,%s,%s,%s\n", client.getUserID(), client.getUserName(), client.getPassword(), client.getPhoneNumber()));
         }
 
-        Utility.saveFile(srcPath, str);
+        Utility.saveFile(srcPath, str.toString());
     }
 }
