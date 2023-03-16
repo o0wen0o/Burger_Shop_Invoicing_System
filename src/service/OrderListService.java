@@ -72,7 +72,12 @@ public class OrderListService implements Service {
         String dateTime = formatter3.format(LocalDateTime.now());
         System.out.println("Date Time: " + dateTime);
 
-        OrderType orderType = getOrderType();
+        System.out.println("\nOrder Type: ");
+        System.out.println("(1)Dine In");
+        System.out.println("(2)Take Away");
+        System.out.print("Option >> ");
+        char selection = Utility.readSelection(new char[]{'1', '2'});
+        OrderType orderType = selection == '1' ? OrderType.DINE_IN : OrderType.TAKE_AWAY;
 
         // show menu
         menu.showMenu();
@@ -166,7 +171,8 @@ public class OrderListService implements Service {
         String dateTime = formatter3.format(LocalDateTime.now());
         System.out.println("Date Time: " + dateTime);
 
-        OrderType orderType = getOrderType();
+        OrderType orderType = order.getOrderType();
+        System.out.println("Order Type: " + orderType);
 
         // copy the dishOrder
         ArrayList<Dish> dishOrderNew = new ArrayList<>();
@@ -329,14 +335,5 @@ public class OrderListService implements Service {
         }
 
         Utility.saveFile(srcPath, str.toString());
-    }
-
-    private OrderType getOrderType() {
-        System.out.println("\nOrder Type: ");
-        System.out.println("(1)Dine In");
-        System.out.println("(2)Take Away");
-        System.out.print("Option >> ");
-        char selection = Utility.readSelection(new char[]{'1', '2'});
-        return selection == '1' ? OrderType.DINE_IN : OrderType.TAKE_AWAY;
     }
 }
