@@ -1,9 +1,13 @@
 package service;
 
+import java.util.List;
+
 /**
  * @author o0wen0o
- * @create 2023-03-07 8:36 AM
+ * @create 2023-03-25 10:27 AM
  */
-public interface Service {
+public interface Service<E> {
+    List<E> getList();
+    void showList();
     void saveFile();
 }

@@ -2,7 +2,12 @@ package view;
 
 import domain.Admin;
 import domain.Client;
+import domain.Dish;
+import domain.Order;
 import service.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author o0wen0o
@@ -11,13 +16,22 @@ import service.*;
 public class MainMenu {
 
     private String identifyId; // current user id
-    private Menu menu = new Menu();
-    private AdminListService adminListService = new AdminListService();
-    private ClientListService clientListService = new ClientListService();
-    private DishOrderService dishOrderService = new DishOrderService(menu);
-    private OrderListService orderListService = new OrderListService(dishOrderService);
+    private final Service<Admin> adminListService = new AdminListService();
+    private final Service<Client> clientListService = new ClientListService();
+    private final OrderService<Dish> menu = new Menu();
+    private final OrderService<Order> orderListService = new OrderListService(menu);
+    private final Map<String, Object> data = new HashMap<>();
+
+    public static void main(String[] args) {
+        MainMenu mainMenu = new MainMenu();
+        mainMenu.enterMainMenu();
+    }
 
     public void enterMainMenu() {
+        data.put("clientID", identifyId);
+        data.put("menu", menu);
+        data.put("clientListService", clientListService);
+
         char option;
         boolean isRun = true;
 
@@ -39,7 +53,7 @@ public class MainMenu {
                     break;
 
                 case '2':
-                    clientListService.createClientProfile();
+                    ((ClientListService) clientListService).createClientProfile();
                     break;
 
                 case '3':
@@ -56,14 +70,17 @@ public class MainMenu {
 
     private void login() {
         System.out.print("--------------------------------------\n");
+
         System.out.print("Admin/Client ID (Ex.A0001/C0001): ");
         identifyId = Utility.readString(5).toUpperCase();
+        data.put("clientID", identifyId);
+
         System.out.print("Password: ");
         String pwd = Utility.readString(20);
 
         String menu = "None";
 
-        for (Admin admin : adminListService.getAllAdmins()) {
+        for (Admin admin : adminListService.getList()) {
             if (admin.getUserID().equals(identifyId) && admin.getPassword().equals(pwd)) {
                 menu = "Admin";
                 break;
@@ -76,7 +93,7 @@ public class MainMenu {
             return;
         }
 
-        for (Client client : clientListService.getAllClients()) {
+        for (Client client : clientListService.getList()) {
             if (client.getUserID().equals(identifyId) && client.getPassword().equals(pwd)) {
                 menu = "Client";
                 break;
@@ -115,21 +132,22 @@ public class MainMenu {
 
             switch (option) {
                 case '1':
-                    orderListService.updateOrder(menu, clientListService, dishOrderService);
+                    orderListService.update(data);
                     break;
 
                 case '2':
-                    orderListService.cancelOrder(dishOrderService);
+                    orderListService.delete();
                     break;
 
                 case '3':
                     System.out.print("Please enter order ID (Ex.O0001): ");
                     String orderID = Utility.readString(5).toUpperCase();
-                    orderListService.showOrderByID(orderID, clientListService, dishOrderService);
+
+                    ((OrderListService) orderListService).showOrderByID(orderID, clientListService);
                     break;
 
                 case '4':
-                    menu.updateMenu();
+                    updateMenu();
                     break;
 
                 case '5':
@@ -162,7 +180,7 @@ public class MainMenu {
 
             switch (option) {
                 case '1':
-                    orderListService.createOrder(identifyId, menu, clientListService, dishOrderService);
+                    orderListService.create(data);
                     break;
 
                 case '2':
@@ -178,8 +196,42 @@ public class MainMenu {
         }
     }
 
-    public static void main(String[] args) {
-        MainMenu mainMenu = new MainMenu();
-        mainMenu.enterMainMenu();
+    public void updateMenu() {
+        char option;
+        boolean isRun = true;
+
+        while (isRun) {
+            System.out.println("\n--------------------------------------");
+            System.out.println("(1) Create Dish");
+            System.out.println("(2) Update Dish");
+            System.out.println("(3) Delete Dish");
+            System.out.println("(4) Quit");
+            System.out.println("--------------------------------------");
+
+            System.out.print("Option >> ");
+            option = Utility.readSelection(new char[]{'1', '2', '3', '4'});
+
+            switch (option) {
+                case '1':
+                    menu.create(data);
+                    break;
+
+                case '2':
+                    menu.update(data);
+                    break;
+
+                case '3':
+                    menu.delete();
+                    break;
+
+                case '4':
+                    System.out.print("Quit? (Y/N): ");
+                    char exit = Utility.readConfirmSelection();
+                    if (exit == 'Y') {
+                        isRun = false;
+                    }
+                    break;
+            }
+        }
     }
 }

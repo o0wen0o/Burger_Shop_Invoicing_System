@@ -6,16 +6,16 @@ import view.Utility;
 import java.util.*;
 
 /**
- * each order has one this instance
+ * each order has one of this instance
  *
  * @author o0wen0o
  * @create 2023-02-17 5:35 PM
  */
-public class DishOrderService implements Service {
-    private Map<String, ArrayList<Dish>> dishOrderList = new HashMap<>();
-    private String srcPath = "DishOrder.txt";
+public class DishOrderService {
+    private final Map<String, List<Dish>> dishOrderList = new HashMap<>();
+    private final String srcPath = "DishOrder.txt";
 
-    public DishOrderService(Menu menu) {
+    public DishOrderService(OrderService<Dish> menu) {
         List<String> elements = Utility.readFile(srcPath);
 
         ArrayList<Dish> dishOrder = new ArrayList<>();
@@ -24,7 +24,7 @@ public class DishOrderService implements Service {
         for (int i = 1; i < elements.size(); i += 2) {
             String dishID = elements.get(i + 0);
             int quantity = Integer.parseInt(elements.get(i + 1));
-            dishOrder.add(new Dish(menu.getDishByID(dishID), quantity));
+            dishOrder.add(new Dish(((Menu) menu).getDishByID(dishID), quantity));
 
             // if element is last two element
             if (i == elements.size() - 2) {
@@ -41,16 +41,47 @@ public class DishOrderService implements Service {
         }
     }
 
+    public void addDishOrder(String orderID, List<Dish> dishOrder) {
+        dishOrderList.put(orderID, dishOrder);
+        saveFile();
+    }
+
+    public void cancelDishOrder(String orderID) {
+        dishOrderList.remove(orderID);
+        saveFile();
+    }
+
+    public List<Dish> getDishOrderByOrderID(String orderID) {
+        return dishOrderList.get(orderID);
+    }
+
+    public void saveFile() {
+        StringBuilder str = new StringBuilder();
+
+        for (Map.Entry<String, List<Dish>> entry : dishOrderList.entrySet()) {
+            String key = entry.getKey();
+            List<Dish> value = entry.getValue();
+
+            str.append(key);
+            for (Dish dish : value) {
+                str.append(String.format(",%s,%s", dish.getDishID(), dish.getQuantity()));
+            }
+            str.append("\n");
+        }
+
+        Utility.saveFile(srcPath, str.toString());
+    }
+
     public void showDishOrderByOrderID(String orderID) {
         showDishOrder(orderID, null);
     }
 
-    public void showDishOrderByList(ArrayList<Dish> dishOrder) {
+    public void showDishOrderByList(List<Dish> dishOrder) {
         showDishOrder(null, dishOrder);
     }
 
-    private void showDishOrder(String orderID, ArrayList<Dish> dishOrderNew) {
-        ArrayList<Dish> dishOrder = new ArrayList<>();
+    private void showDishOrder(String orderID, List<Dish> dishOrderNew) {
+        List<Dish> dishOrder = new ArrayList<>();
 
         if (dishOrderNew == null) {
             dishOrder = dishOrderList.get(orderID);
@@ -77,36 +108,5 @@ public class DishOrderService implements Service {
         System.out.println("Total: $" + total);
         System.out.println(String.format("%76s", " ").replace(' ', '-'));
         System.out.println();
-    }
-
-    public void addDishOrder(String orderID, ArrayList<Dish> dishOrder) {
-        dishOrderList.put(orderID, dishOrder);
-        saveFile();
-    }
-
-    public void cancelDishOrder(String orderID) {
-        dishOrderList.remove(orderID);
-        saveFile();
-    }
-
-    public List<Dish> getDishOrderByOrderID(String orderID) {
-        return dishOrderList.get(orderID);
-    }
-
-    public void saveFile() {
-        StringBuilder str = new StringBuilder();
-
-        for (Map.Entry<String, ArrayList<Dish>> entry : dishOrderList.entrySet()) {
-            String key = entry.getKey();
-            ArrayList<Dish> value = entry.getValue();
-
-            str.append(key);
-            for (Dish dish : value) {
-                str.append(String.format(",%s,%s", dish.getDishID(), dish.getQuantity()));
-            }
-            str.append("\n");
-        }
-
-        Utility.saveFile(srcPath, str.toString());
     }
 }

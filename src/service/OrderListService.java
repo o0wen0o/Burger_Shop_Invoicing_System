@@ -1,5 +1,6 @@
 package service;
 
+import domain.Client;
 import domain.Dish;
 import domain.Order;
 import view.Utility;
@@ -8,16 +9,19 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author o0wen0o
  * @create 2023-02-17 3:35 PM
  */
-public class OrderListService implements Service {
-    private List<Order> orderList = new ArrayList<>();
-    private String srcPath = "OrderData.txt";
+public class OrderListService implements OrderService<Order> {
+    private final List<Order> orderList = new ArrayList<>();
+    private final String srcPath = "OrderData.txt";
+    private final DishOrderService dishOrderService;
 
-    public OrderListService(DishOrderService dishOrderService) {
+    public OrderListService(OrderService<Dish> menu) {
+        dishOrderService = new DishOrderService(menu);
         List<String> elements = Utility.readFile(srcPath);
 
         for (int i = 0; i < elements.size(); i += 5) {
@@ -32,28 +36,12 @@ public class OrderListService implements Service {
         }
     }
 
-    public void showOrderByID(String orderID, ClientListService clientListService, DishOrderService dishOrderService) {
-        Order order = getOrderById(orderID);
+    @Override
+    public void create(Map<String, Object> data) {
+        String clientID = (String) data.get("clientID");
+        Menu menu = (Menu) data.get("menu");
+        ClientListService clientListService = (ClientListService) data.get("clientListService");
 
-        if (order == null) {
-            System.out.println("Order ID does not exist.\n");
-            return;
-        }
-
-        System.out.println();
-        System.out.println(String.format("%76s", " ").replace(' ', '-'));
-        System.out.println("Burger Shop System");
-        System.out.println(String.format("%76s", " ").replace(' ', '-'));
-        System.out.println("Order ID  : " + orderID);
-        System.out.println("Table No  : " + order.getTableNo());
-        System.out.println("Bill To   : " + clientListService.getClientById(order.getClientID()).getUserName());
-        System.out.println("Order Type: " + order.getOrderType());
-        System.out.println("Date      : " + order.getDateTime());
-
-        dishOrderService.showDishOrderByOrderID(orderID);
-    }
-
-    public void createOrder(String clientID, Menu menu, ClientListService clientListService, DishOrderService dishOrderService) {
         // not allow repeat same ID, no need input from user
         // get last order ID
         String lastId = orderList.get(orderList.size() - 1).getOrderID();
@@ -79,82 +67,33 @@ public class OrderListService implements Service {
         char selection = Utility.readSelection(new char[]{'1', '2'});
         OrderType orderType = selection == '1' ? OrderType.DINE_IN : OrderType.TAKE_AWAY;
 
-        // show menu
-        menu.showMenu();
+        List<Dish> dishOrder = addToCart(menu);
 
-        ArrayList<Dish> dishOrder = new ArrayList<>();
-        System.out.println("(1) Enter '1' To Complete Order");
-        System.out.println("(2) Enter '2' To Cancel Order");
-
-        while (true) {
-            System.out.print("Add To Cart (Enter Dish ID): ");
-            String dishID = Utility.readString(3).toUpperCase();
-
-            // to quit the order process
-            if ("2".equalsIgnoreCase(dishID)) {
-                System.out.print("Cancel the order? (Y/N): ");
-                char exit = Utility.readConfirmSelection();
-                if (exit == 'Y') {
-                    break;
-                }
-                continue; // continue this method
-            }
-
-            // to complete the order process
-            if ("1".equalsIgnoreCase(dishID)) {
-                if (dishOrder.isEmpty()) {
-                    System.out.println("No dishes in the cart.");
-                    continue; // continue this method
-                }
-
-                // end this method
-                dishOrderService.addDishOrder(orderID, dishOrder);
-                orderList.add(new Order(orderID, tableNo, clientID, orderType, dishOrder, dateTime));
-                saveFile();
-                System.out.println("Created Successfully!");
-
-                // show the order
-                Utility.readReturn();
-                showOrderByID(orderID, clientListService, dishOrderService);
-                break;
-            }
-
-            // check if dish ID exist
-            if (!menu.isExist(dishID)) {
-                System.out.println("Dish does not exist. Please try again.");
-                continue; // continue this method
-            }
-
-            Dish dish = menu.getDishByID(dishID);
-
-            System.out.print("Quantity >> ");
-            int quantity = Utility.readInt(6);
-
-            boolean isNewDish = true;
-            // if the dish already ordered
-            for (Dish dishOld : dishOrder) {
-                if (dishOld.getDishID().equals(dishID)) {
-                    dishOld.setQuantity(dishOld.getQuantity() + quantity);
-
-                    isNewDish = false;
-                    break;
-                }
-            }
-
-            // if the dish haven't ordered
-            if (isNewDish) {
-                dishOrder.add(new Dish(dish, quantity));
-            }
-
-            System.out.printf("Added %d %s.\n%n", quantity, dish.getDishName());
+        if (dishOrder == null) {
+            return;
         }
+
+        createOrder(new Order(orderID, tableNo, clientID, orderType, dishOrder, dateTime), dishOrder);
+        System.out.println("Created Successfully!");
+
+        // show the order
+        Utility.readReturn();
+        System.out.println("Here is your order:");
+        showOrderByID(orderID, clientListService);
     }
 
-    // update order by ID
-    public void updateOrder(Menu menu, ClientListService clientListService, DishOrderService dishOrderService) {
+    @Override
+    public void update(Map<String, Object> data) {
+        // update order by ID
+        Menu menu = (Menu) data.get("menu");
+        ClientListService clientListService = (ClientListService) data.get("clientListService");
+
         System.out.print("Please enter order ID (Ex.O0001): ");
         String orderID = Utility.readString(5).toUpperCase();
         Order order = getOrderById(orderID);
+
+        // index of the object which will be changed
+        int index = orderList.indexOf(order);
 
         if (order == null) {
             System.out.println("Order ID does not exist.\n");
@@ -175,7 +114,7 @@ public class OrderListService implements Service {
         System.out.println("Order Type: " + orderType);
 
         // copy the dishOrder
-        ArrayList<Dish> dishOrderNew = new ArrayList<>();
+        List<Dish> dishOrderNew = new ArrayList<>();
         for (Dish dish : order.getDishOrder()) {
             dishOrderNew.add(new Dish(dish, dish.getQuantity()));
         }
@@ -191,8 +130,8 @@ public class OrderListService implements Service {
             System.out.println("(1) Add New Dish");
             System.out.println("(2) Update Dish");
             System.out.println("(3) Cancel Dish");
-            System.out.println("(4) Complete Order");
-            System.out.println("(5) Cancel Order");
+            System.out.println("(4) Complete Update");
+            System.out.println("(5) Cancel Update");
             System.out.println("--------------------------------------");
 
             System.out.print("Option >> ");
@@ -201,7 +140,7 @@ public class OrderListService implements Service {
             String dishID;
             switch (option) {
                 case '1':
-                    menu.showMenu();
+                    (menu).showList();
                 case '2':
                     if (option == '1') {
                         System.out.print("Add To Cart (Enter Dish ID): ");
@@ -212,12 +151,12 @@ public class OrderListService implements Service {
                     dishID = Utility.readString(3).toUpperCase();
 
                     // check if dish ID exist
-                    if (!menu.isExist(dishID)) {
+                    if (!(menu).isExist(dishID)) {
                         System.out.println("Dish does not exist. Please try again.");
                         break; // continue this method
                     }
 
-                    Dish dish = menu.getDishByID(dishID);
+                    Dish dish = (menu).getDishByID(dishID);
 
                     System.out.print("Quantity >> ");
                     int quantity = Utility.readInt(6);
@@ -255,7 +194,7 @@ public class OrderListService implements Service {
                     dishID = Utility.readString(3).toUpperCase();
 
                     // check if dish ID exist
-                    if (!menu.isExist(dishID)) {
+                    if (!(menu).isExist(dishID)) {
                         System.out.println("Dish does not exist. Please try again.");
                         break; // continue this method
                     }
@@ -272,20 +211,20 @@ public class OrderListService implements Service {
 
                 case '4':
                     // to complete the order process
+                    // cart can not be empty
                     if (dishOrderNew.isEmpty()) {
                         System.out.println("No dishes in the cart.");
                         break; // continue this method
                     }
 
                     // end this method
-                    dishOrderService.addDishOrder(orderID, dishOrderNew);
-                    orderList.set(orderList.indexOf(order), new Order(orderID, tableNo, clientID, orderType, dishOrderNew, dateTime));
-                    saveFile();
+                    updateOrder(index, new Order(orderID, tableNo, clientID, orderType, dishOrderNew, dateTime), dishOrderNew);
                     System.out.println("Updated Successfully!");
                     isRun = false;
                     break;
 
                 case '5':
+                    // to cancel the order process
                     System.out.print("Cancel the order? (Y/N): ");
                     char exit = Utility.readConfirmSelection();
                     if (exit == 'Y') {
@@ -297,7 +236,8 @@ public class OrderListService implements Service {
     }
 
     // cancel order by ID
-    public void cancelOrder(DishOrderService dishOrderService) {
+    @Override
+    public void delete() {
         System.out.print("Please enter order ID (Ex.O0001): ");
         String orderID = Utility.readString(5).toUpperCase().toUpperCase();
         Order order = getOrderById(orderID);
@@ -310,21 +250,51 @@ public class OrderListService implements Service {
         System.out.print("Confirm cancel order? (Y/N): ");
         char exit = Utility.readConfirmSelection();
         if (exit == 'Y') {
-            dishOrderService.cancelDishOrder(orderID);
-            orderList.remove(order);
-            saveFile();
+            cancelOrder(order);
+            System.out.println("Deleted Successfully!");
         }
     }
 
-    public Order getOrderById(String orderID) {
-        orderID = orderID.toUpperCase();
+    @Override
+    public void showList() {
+        for (Order order : orderList) {
+            String orderID = order.getOrderID();
 
-        for (Order Order : orderList) {
-            if (orderID.equals(Order.getOrderID())) {
-                return Order;
-            }
+            System.out.println(String.format("%76s", " ").replace(' ', '-'));
+            System.out.println("Order ID  : " + orderID);
+            System.out.println("Table No  : " + order.getTableNo());
+            System.out.println("Bill To   : " + order.getClientID());
+            System.out.println("Order Type: " + order.getOrderType());
+            System.out.println("Date      : " + order.getDateTime());
+
+            dishOrderService.showDishOrderByOrderID(orderID);
         }
-        return null;
+    }
+
+    @Override
+    public List<Order> getList() {
+        return orderList;
+    }
+
+    public void showOrderByID(String orderID, Service<Client> clientListService) {
+        Order order = getOrderById(orderID);
+
+        if (order == null) {
+            System.out.println("Order ID does not exist.\n");
+            return;
+        }
+
+        System.out.println();
+        System.out.println(String.format("%76s", " ").replace(' ', '-'));
+        System.out.println("Burger Shop System");
+        System.out.println(String.format("%76s", " ").replace(' ', '-'));
+        System.out.println("Order ID  : " + orderID);
+        System.out.println("Table No  : " + order.getTableNo());
+        System.out.println("Bill To   : " + ((ClientListService) clientListService).getClientById(order.getClientID()).getUserName());
+        System.out.println("Order Type: " + order.getOrderType());
+        System.out.println("Date      : " + order.getDateTime());
+
+        dishOrderService.showDishOrderByOrderID(orderID);
     }
 
     public void saveFile() {
@@ -335,5 +305,98 @@ public class OrderListService implements Service {
         }
 
         Utility.saveFile(srcPath, str.toString());
+    }
+
+    private void createOrder(Order order, List<Dish> dishOrder) {
+        dishOrderService.addDishOrder(order.getOrderID(), dishOrder);
+        orderList.add(order);
+        saveFile();
+    }
+
+    private List<Dish> addToCart(Menu menu) {
+        menu.showList();
+
+        List<Dish> dishOrder = new ArrayList<>();
+        System.out.println("(1) Enter '1' To Complete Order");
+        System.out.println("(2) Enter '2' To Cancel Order");
+
+        while (true) {
+            System.out.print("Add To Cart (Enter Dish ID): ");
+            String dishID = Utility.readString(3).toUpperCase();
+
+            // to quit the order process
+            if ("2".equalsIgnoreCase(dishID)) {
+                System.out.print("Cancel the order? (Y/N): ");
+                char exit = Utility.readConfirmSelection();
+                if (exit == 'Y') {
+                    return null;
+                }
+                continue; // continue this method
+            }
+
+            // to complete the order process
+            if ("1".equalsIgnoreCase(dishID)) {
+                if (dishOrder.isEmpty()) {
+                    System.out.println("No dishes in the cart.");
+                    continue; // continue this method
+                }
+
+                // end this method
+                return dishOrder;
+            }
+
+            // if dish ID does not exist
+            if (!menu.isExist(dishID)) {
+                System.out.println("Dish does not exist. Please try again.");
+                continue; // continue this method
+            }
+
+            // if dish exist
+            Dish dish = menu.getDishByID(dishID);
+
+            System.out.print("Quantity >> ");
+            int quantity = Utility.readInt(6);
+
+            // if the dish already ordered
+            boolean isNewDish = true;
+            for (Dish dishOld : dishOrder) {
+                if (dishOld.getDishID().equals(dishID)) {
+                    dishOld.setQuantity(dishOld.getQuantity() + quantity);
+
+                    isNewDish = false;
+                    break;
+                }
+            }
+
+            // if the dish has not been ordered
+            if (isNewDish) {
+                dishOrder.add(new Dish(dish, quantity));
+            }
+
+            System.out.printf("Added %d %s.\n%n", quantity, dish.getDishName());
+        }
+    }
+
+    private void updateOrder(int index, Order order, List<Dish> dishOrderNew) {
+        dishOrderService.addDishOrder(order.getOrderID(), dishOrderNew);
+        orderList.set(index, order);
+        saveFile();
+    }
+
+    private void cancelOrder(Order order) {
+        dishOrderService.cancelDishOrder(order.getOrderID());
+        orderList.remove(order);
+        saveFile();
+    }
+
+    private Order getOrderById(String orderID) {
+        orderID = orderID.toUpperCase();
+
+        for (Order order : orderList) {
+            if (orderID.equals(order.getOrderID())) {
+                return order;
+            }
+        }
+        return null;
     }
 }

@@ -10,9 +10,9 @@ import java.util.List;
  * @author o0wen0o
  * @create 2023-02-17 3:37 PM
  */
-public class ClientListService implements Service {
-    private List<Client> clientList = new ArrayList<>();
-    private String srcPath = "ClientData.txt";
+public class ClientListService implements Service<Client> {
+    private final List<Client> clientList = new ArrayList<>();
+    private final String srcPath = "ClientData.txt";
 
     public ClientListService() {
         List<String> elements = Utility.readFile(srcPath);
@@ -27,7 +27,8 @@ public class ClientListService implements Service {
         }
     }
 
-    public void showClientList() {
+    @Override
+    public void showList() {
         System.out.println();
         System.out.println(String.format("%52s", " ").replace(' ', '-'));
 
@@ -64,8 +65,7 @@ public class ClientListService implements Service {
         System.out.print("Phone number: ");
         String phoneNumber = Utility.readString(13);
 
-        clientList.add(new Client(clientID, name, password, phoneNumber));
-        saveFile();
+        addClient(new Client(clientID, name, password, phoneNumber));
         System.out.println("Added Successfully.");
     }
 
@@ -80,7 +80,7 @@ public class ClientListService implements Service {
         return null;
     }
 
-    public List<Client> getAllClients() {
+    public List<Client> getList() {
         return clientList;
     }
 
@@ -92,5 +92,10 @@ public class ClientListService implements Service {
         }
 
         Utility.saveFile(srcPath, str.toString());
+    }
+
+    private void addClient(Client client) {
+        clientList.add(client);
+        saveFile();
     }
 }

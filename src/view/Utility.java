@@ -8,7 +8,7 @@ import java.util.*;
  * @create 2023-02-16 8:27 PM
  */
 public class Utility {
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static ArrayList<String> readFile(String srcPath) {
         ArrayList<String> elements = new ArrayList<>();
@@ -58,7 +58,7 @@ public class Utility {
 
     // limit the input
     public static char readSelection(char[] conditions) {
-        char c = 0;
+        char c;
         boolean isValid = false;
 
         while (true) {

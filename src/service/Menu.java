@@ -5,14 +5,15 @@ import view.Utility;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author o0wen0o
  * @create 2023-02-17 3:36 PM
  */
-public class Menu implements Service{
-    private List<Dish> menu = new ArrayList<>();
-    private String srcPath = "Menu.txt";
+public class Menu implements OrderService<Dish> {
+    private final List<Dish> menu = new ArrayList<>();
+    private final String srcPath = "Menu.txt";
 
     public Menu() {
         List<String> elements = Utility.readFile(srcPath);
@@ -26,63 +27,8 @@ public class Menu implements Service{
         }
     }
 
-    public void showMenu() {
-        System.out.println("\nMenu:");
-        System.out.println(String.format("%54s", " ").replace(' ', '-'));
-
-        String str = String.format("|%-10s|%-30s|%-10s|", "Dish ID", "Dish Name", "Unit Price");
-        System.out.println(str);
-
-        System.out.println(String.format("%54s", " ").replace(' ', '-'));
-
-        for (Dish dish : menu) {
-            System.out.println(dish);
-        }
-
-        System.out.println(String.format("%54s", " ").replace(' ', '-'));
-        System.out.println();
-    }
-
-    public void updateMenu() {
-        char option;
-        boolean isRun = true;
-
-        while (isRun) {
-            System.out.println("\n--------------------------------------");
-            System.out.println("(1) Create Dish");
-            System.out.println("(2) Update Dish");
-            System.out.println("(3) Delete Dish");
-            System.out.println("(4) Quit");
-            System.out.println("--------------------------------------");
-
-            System.out.print("Option >> ");
-            option = Utility.readSelection(new char[]{'1', '2', '3', '4'});
-
-            switch (option) {
-                case '1':
-                    createDish();
-                    break;
-
-                case '2':
-                    updateDish();
-                    break;
-
-                case '3':
-                    deleteDish();
-                    break;
-
-                case '4':
-                    System.out.print("Quit? (Y/N): ");
-                    char exit = Utility.readConfirmSelection();
-                    if (exit == 'Y') {
-                        isRun = false;
-                    }
-                    break;
-            }
-        }
-    }
-
-    public void createDish() {
+    @Override
+    public void create(Map<String, Object> data) {
         // not allow repeat same ID, no need input from user
         // get last order ID
         String lastId = menu.get(menu.size() - 1).getDishID();
@@ -98,20 +44,22 @@ public class Menu implements Service{
         System.out.print("Unit Price >> ");
         double unitPrice = Utility.readDouble(6);
 
-        menu.add(new Dish(dishID, dishName, unitPrice));
-        saveFile();
+        createDish(new Dish(dishID, dishName, unitPrice));
         System.out.println("Created Successfully!");
     }
 
-    public void updateDish() {
+    @Override
+    public void update(Map<String, Object> data) {
         showMenu();
 
         String dishID = searchDish();
-
         if (dishID == null)
             return;
 
         Dish dish = getDishByID(dishID);
+
+        // index of the object which will be changed
+        int index = menu.indexOf(dish);
 
         System.out.println("Press 'Enter' if remain unchanged. ");
         System.out.print("Dish Name >> ");
@@ -120,12 +68,12 @@ public class Menu implements Service{
         System.out.print("Unit Price >> ");
         double unitPrice = Utility.readDouble(6, dish.getUnitPrice());
 
-        menu.set(menu.indexOf(dish), new Dish(dishID, dishName, unitPrice));
-        saveFile();
+        updateDish(index, new Dish(dishID, dishName, unitPrice));
         System.out.println("Updated Successfully!");
     }
 
-    public void deleteDish() {
+    @Override
+    public void delete() {
         showMenu();
 
         String dishID = searchDish();
@@ -135,9 +83,18 @@ public class Menu implements Service{
 
         Dish dish = getDishByID(dishID);
 
-        menu.remove(dish);
-        saveFile();
+        deleteDish(dish);
         System.out.println("Deleted Successfully!");
+    }
+
+    @Override
+    public void showList() {
+        showMenu();
+    }
+
+    @Override
+    public List<Dish> getList() {
+        return menu;
     }
 
     public boolean isExist(String dishID) {
@@ -165,6 +122,21 @@ public class Menu implements Service{
         Utility.saveFile(srcPath, str.toString());
     }
 
+    private void createDish(Dish dish) {
+        menu.add(dish);
+        saveFile();
+    }
+
+    private void updateDish(int index, Dish dish) {
+        menu.set(index, dish);
+        saveFile();
+    }
+
+    private void deleteDish(Dish dish) {
+        menu.remove(dish);
+        saveFile();
+    }
+
     // search dish by ID, if exist then return the dishID, if not then return null
     private String searchDish() {
         System.out.print("Please enter dish ID: ");
@@ -177,5 +149,22 @@ public class Menu implements Service{
         }
 
         return dishID;
+    }
+
+    private void showMenu() {
+        System.out.println("\nMenu:");
+        System.out.println(String.format("%54s", " ").replace(' ', '-'));
+
+        String str = String.format("|%-10s|%-30s|%-10s|", "Dish ID", "Dish Name", "Unit Price");
+        System.out.println(str);
+
+        System.out.println(String.format("%54s", " ").replace(' ', '-'));
+
+        for (Dish dish : menu) {
+            System.out.println(dish);
+        }
+
+        System.out.println(String.format("%54s", " ").replace(' ', '-'));
+        System.out.println();
     }
 }

@@ -10,9 +10,9 @@ import java.util.List;
  * @author o0wen0o
  * @create 2023-02-22 8:28 PM
  */
-public class AdminListService implements Service {
-    private List<Admin> adminList = new ArrayList<>();
-    private String srcPath = "AdminData.txt";
+public class AdminListService implements Service<Admin> {
+    private final List<Admin> adminList = new ArrayList<>();
+    private final String srcPath = "AdminData.txt";
 
     public AdminListService() {
         List<String> elements = Utility.readFile(srcPath);
@@ -27,7 +27,8 @@ public class AdminListService implements Service {
         }
     }
 
-    public void showAdminList() {
+    @Override
+    public void showList() {
         System.out.println();
         System.out.println(String.format("%52s", " ").replace(' ', '-'));
 
@@ -44,7 +45,7 @@ public class AdminListService implements Service {
         System.out.println();
     }
 
-    public List<Admin> getAllAdmins() {
+    public List<Admin> getList() {
         return adminList;
     }
 
